@@ -15,13 +15,13 @@ library("tidyverse")
 
 ```{r}
 #| warning: false
-supp_1 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM38_ESM_sup1.xlsx")
+supp_1 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM38_ESM_sup1.xlsx", skip = 1)
 
-supp_2 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM39_ESM_sup2.xlsx")
+supp_2 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM39_ESM_sup2.xlsx", skip = 2)
 
 supp_3 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM40_ESM_sup3.xlsx")
 
-supp_5 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM42_ESM_sup5.xlsx")
+supp_5 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM42_ESM_sup5.xlsx", skip = 1)
 ```
 
 # Creating files with the data
