@@ -28,14 +28,21 @@ Rename columns to have standard names
 
 ```{r}
 #| echo: false
+library("janitor")
 dirty_1 <- read_tsv(file = "../data/dirty_data/supp_1.tsv")
 ```
 
 ```{r}
 clean_1 <- dirty_1 |>
-  select(-c(34:64, 67)) |> 
-  drop_na()  
+  clean_names() |> 
+  select(-c(34:64, 67, 69)) |> 
+  mutate(
+    across(everything(), 
+    ~replace(., is.nan(.), NA))) |>
+  drop_na()
+
 nrow(clean_1)
+view(clean_1)
 ```
 
 # Cleaning table 2 Louise
