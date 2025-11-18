@@ -51,14 +51,26 @@ dirty_2 <- read_tsv(file = "../data/dirty_data/supp_2.tsv")
 ```
 
 # Cleaning table 3
-
-Doesn't need cleaning
+Before removing NaN values, the data has: 19,501 entries
+After removing NaN values, the data has: 11,062 entries
 
 Rename columns so they have more standard names
 
 ```{r}
 #| echo: false
+library("dplyr")
+library("janitor")
+
 dirty_3 <- read_tsv(file = "../data/dirty_data/supp_3.tsv")
+
+#Transforming NaNs into NAs to drop them and cleaning column names
+clean_3 <- drop_na(
+  mutate(
+    clean_names(dirty_3),
+    across(everything(), 
+    ~replace(., is.nan(.), NA))
+  )
+)  
 ```
 
 # Cleaning table 5
