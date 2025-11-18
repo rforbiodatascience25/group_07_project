@@ -58,7 +58,7 @@ Keep only logLFQ.
 
 Separate data into different tables (isoalted cells, brain regions and cerebellum development)
 
-Eliminate PEP column and Mol. weight.
+Eliminate (PEP column?) and Mol. weight.
 
 Rename columns to have standard names
 
