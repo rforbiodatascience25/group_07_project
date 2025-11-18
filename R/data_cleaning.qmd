@@ -31,6 +31,21 @@ Rename columns to have standard names
 dirty_1 <- read_tsv(file = "../data/dirty_data/supp_1.tsv")
 ```
 
+
+```{r}
+dirty_1_without_ibaq <- dirty_1[ , -c(34:64,67)]
+dirty_1_without_ibaq <- drop_na(dirty_1_without_ibaq)
+nrow(dirty_1_without_ibaq)
+```
+
+
+```{r}
+clean_1 <- dirty_1 |>
+  select(-c(34:64, 67)) |> 
+  drop_na()  
+nrow(clean_1)
+```
+
 # Cleaning table 2
 
 Eliminate standard deviation part.
