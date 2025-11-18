@@ -1,0 +1,39 @@
+---
+title: "data_cleaning"
+format: html
+edtiro: visual
+---
+
+# Libraries
+
+```{r}
+library("tidyverse")
+```
+
+# Cleaning table 1
+
+```{r}
+#| echo: false
+dirty_1 <- read_tsv(file = "../data/dirty_data/supp_1.tsv")
+```
+
+# Cleaning table 2
+
+```{r}
+#| echo: false
+dirty_2 <- read_tsv(file = "../data/dirty_data/supp_2.tsv")
+```
+
+# Cleaning table 3
+
+```{r}
+#| echo: false
+dirty_3 <- read_tsv(file = "../data/dirty_data/supp_3.tsv")
+```
+
+# Cleaning table 5
+
+```{r}
+#| echo: false
+dirty_5 <- read_tsv(file = "../data/dirty_data/supp_5.tsv")
+```

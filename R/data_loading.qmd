@@ -24,16 +24,19 @@ supp_3 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM40_ESM
 supp_5 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM42_ESM_sup5.xlsx", skip = 1)
 ```
 
-# Creating files with the data
+# Creating loaded files with the data
 
 ```{r}
-dir.create("data/dirty_data",recursive = TRUE, showWarnings = FALSE)
+dir.create("../data/dirty_data", recursive = TRUE, showWarnings = FALSE)
 ```
 
 ```{r}
 write_tsv(supp_1, "../data/dirty_data/supp_1.tsv")
+
 write_tsv(supp_2, "../data/dirty_data/supp_2.tsv")
+
 write_tsv(supp_3, "../data/dirty_data/supp_3.tsv")
+
 write_tsv(supp_5, "../data/dirty_data/supp_5.tsv")
 
 
