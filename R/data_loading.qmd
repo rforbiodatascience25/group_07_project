@@ -4,4 +4,37 @@ format: html
 editor: visual
 ---
 
-Hola
+# Libraries
+
+```{r}
+#| echo: false 
+library("tidyverse")
+```
+
+# Load excel into R object
+
+```{r}
+#| warning: false
+supp_1 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM38_ESM_sup1.xlsx", skip = 1)
+
+supp_2 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM39_ESM_sup2.xlsx", skip = 2)
+
+supp_3 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM40_ESM_sup3.xlsx")
+
+supp_5 <- readxl::read_xlsx(path = "../data/_raw/41593_2015_BFnn4160_MOESM42_ESM_sup5.xlsx", skip = 1)
+```
+
+# Creating files with the data
+
+```{r}
+dir.create("data/dirty_data",recursive = TRUE, showWarnings = FALSE)
+```
+
+```{r}
+write_tsv(supp_1, "../data/dirty_data/supp_1.tsv")
+write_tsv(supp_2, "../data/dirty_data/supp_2.tsv")
+write_tsv(supp_3, "../data/dirty_data/supp_3.tsv")
+write_tsv(supp_5, "../data/dirty_data/supp_5.tsv")
+
+
+```
