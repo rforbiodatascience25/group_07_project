@@ -1,10 +1,5 @@
 Version: 1.0
-<<<<<<< HEAD
-ProjectId: 780542ab-5c77-441e-8cb4-4423ecf199bb
-=======
-ProjectId: 73982d13-1d05-41bc-8fb6-04c00af21313
->>>>>>> 6a77bb52305d74312e35fbff895eeb0895037487
-
+ProjectId: 780542ab-5c77-441e-8cb4-4423ecf199bb  # or the other ProjectId
 RestoreWorkspace: Default
 SaveWorkspace: Default
 AlwaysSaveHistory: Default
