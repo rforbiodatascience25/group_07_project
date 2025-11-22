@@ -1,0 +1,112 @@
+---
+title: "PCA"
+format: html
+editor: visual
+---
+
+# Libraries
+
+```{r}
+#| warning: false
+library("tidyverse")
+library("pcaMethods")
+library("janitor")
+library("patchwork")
+```
+
+# Load data
+
+```{r}
+#| warning: false
+brain_regions <- read_tsv("../data/clean_data/clean_1.tsv")
+brain_regions <- clean_names(brain_regions)
+```
+
+```{r}
+#| warning: false
+brain_regions_dirty <- readxl::read_xlsx("../data/_raw/EMS116660-supplement-Table_S17.xlsx", skip = 1)
+clean_regions <- brain_regions_dirty |> 
+  clean_names() |> 
+  select(14:23)
+```
+
+# Data analysis
+
+To re-create the PCA from the paper (Fig. 5A) we searched the pre-installed packages so it would be less of a struggle and found the package "pcaMethods". We followed the vignette to understand how it works and replicate (or improve) results.
+
+## Pre-process data for this specific analysis
+
+```{r}
+
+#Create an object with ONLY numerical data for the PCA object
+numerical_brain_regions <- clean_regions |> 
+  select_if(map_lgl(.x = clean_regions, .f = is.numeric)) |> 
+  remove_empty("rows") #Comepletely empty rows can't be used at all (this is said by checkData, used in the following step)
+
+```
+
+## NA check
+
+```{r}
+  
+#In the pcaMethods package there are different methods to analyse the data and handle NA's
+#Different methods allow for different % of missing values, let's check what's the percentage of our NA's:
+
+total_values = nrow(numerical_brain_regions) * ncol(numerical_brain_regions) 
+total_NAs = sum(is.na(clean_regions))
+NA_percentage = (total_NAs/total_values) * 100 
+NA_percentage 
+
+#53,93 cells are NAs! That is a huge amount of missing data, but in order to not work with half out dataset
+#let's use the most possibly robust method in the pcaMethods package to handle NA's which is BPCA (Bayesian PCA)
+
+#Parallel to this, let's also analyse the data without the NA's to do a final comparison (next section)
+
+```
+
+## PCA object creation
+
+```{r}
+
+brdata <- numerical_brain_regions |> 
+  prep(scale = "none", center = T) 
+
+brdataNONA <- numerical_brain_regions |> 
+  na.omit() |> 
+  prep(scale = "none", center = T) 
+
+checkData(brdata, verbose = T)
+checkData(brdataNONA, verbose = T)
+#From the package, to see if the data has the appropiate structure
+
+resBPCA <- pca(brdata, method = "bpca", center = F, nPcs = 5)
+resBPCANONA <- pca(brdataNONA, method = "bpca", center = F, nPcs = 5)
+```
+
+## Create PCA plots
+
+```{r}
+
+cleanBayes <- as.data.frame(loadings(resBPCA))
+cleanBayes <- cleanBayes |> 
+  mutate(region = row.names(cleanBayes))
+
+withNA <- cleanBayes |> 
+  ggplot(aes(x = PC1, y = PC2)) +
+  geom_point(aes(color = region)) +
+  theme_minimal()
+
+cleanNONA <- as.data.frame(loadings(resBPCANONA))
+cleanNONA <- cleanNONA |> 
+  mutate(region = row.names(cleanNONA))
+
+withNONA <- cleanNONA |> 
+  ggplot(aes(x = PC1, y = PC2)) +
+  geom_point(aes(color = region)) +
+  theme_minimal()
+
+withNA + withNONA
+
+
+scoresBayes <- as.data.frame(scores(resBPCA))
+```
