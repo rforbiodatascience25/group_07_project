@@ -1,0 +1,10 @@
+---
+title: "Figure2a"
+format: html
+editor: visual
+---
+
+```{r}
+#| echo: false
+clean_3 <- read_tsv(file = "../data/clean_data/clean_3.tsv")
+```
