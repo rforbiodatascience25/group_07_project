@@ -4,7 +4,56 @@ format: html
 editor: visual
 ---
 
+Libraries
+
 ```{r}
 #| echo: false
-clean_3 <- read_tsv(file = "../data/clean_data/clean_3.tsv")
+library(tidyverse)
+library(ggplot2)
+library(hrbrthemes)
+```
+
+Data reading
+
+```{r}
+#| echo: false
+clean_3 <- read_tsv(file = "../data/clean_data/clean_3.tsv", show_col_types = FALSE)
+clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
+```
+
+Proteomics data
+
+```{r}
+clean_5 <- clean_5 |> 
+  select(c(3:26)) |>
+  mutate(across(everything(), as.numeric))
+```
+
+```{r}
+corr_mat <- cor(clean_5, use = "pairwise.complete.obs", method = "pearson")
+
+corr_long <- corr_mat |>
+  as.data.frame() |>
+  rownames_to_column("rep1") |>
+  pivot_longer(
+    cols = -rep1,
+    names_to = "rep2",
+    values_to = "correlation"
+  )
+
+corr_long
+```
+
+```{r}
+hc <- hclust(as.dist(1 - corr_mat))
+corr_long$rep1 <- factor(corr_long$rep1, levels = hc$labels[hc$order])
+corr_long$rep2 <- factor(corr_long$rep2, levels = hc$labels[hc$order])
+```
+
+```{r}
+corr_long |>
+  ggplot(aes(rep1, rep2, fill= correlation)) + 
+    geom_tile() +
+    scale_fill_gradient(low="blue", high="red") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
