@@ -41,11 +41,19 @@ corr_long_p <- corr_mat_p |>
     values_to = "correlation"
   )
 
-corr_long_p
+corr_long_p <- corr_long_p |>
+  mutate(
+    rep1 = case_when(
+      grepl('adult_', rep1) ~ stringr::str_split(rep1, 'adult_', simplify = TRUE)[, 2],
+      TRUE ~ rep1),
+    rep2 = case_when(
+      grepl('adult_', rep2) ~ stringr::str_split(rep2, 'adult_', simplify = TRUE)[, 2],
+      TRUE ~ rep2))
 ```
 
 ```{r}
 hc <- hclust(as.dist(1 - corr_mat_p))
+
 corr_long_p <- corr_long_p |>
   mutate(rep1 = factor(rep1, levels = hc$labels[hc$order]), 
          rep2 = factor(rep2, levels = hc$labels[hc$order]))
@@ -53,17 +61,6 @@ corr_long_p <- corr_long_p |>
 
 ```{r}
 corr_long_p |>
-  
-  mutate(
-    rep1 = case_when(
-      grepl('adult_', rep1) ~ paste0('microglia_', 
-                                   stringr::str_split(rep1, '_', simplify = TRUE)[, 3]),
-      TRUE ~ rep1),
-    rep2 = case_when(
-      grepl('adult_', rep2) ~ paste0('microglia_', 
-                                   stringr::str_split(rep2, '_', simplify = TRUE)[, 3]),
-      TRUE ~ rep2),) |>
-  
   ggplot(aes(rep1, rep2, fill= correlation)) + 
     ggtitle('Proteomics data') +
     geom_tile(aes(fill = correlation), colour = "black") +
@@ -97,19 +94,7 @@ corr_long_t <- corr_mat_t |>
     values_to = "correlation"
   )
 
-corr_long_t
-```
-
-```{r}
-hc <- hclust(as.dist(1 - corr_mat_t))
 corr_long_t <- corr_long_t |>
-  mutate(rep1 = factor(rep1, levels = hc$labels[hc$order]), 
-         rep2 = factor(rep2, levels = hc$labels[hc$order]))
-```
-
-```{r}
-corr_long_t |>
-  
   mutate(
     rep1 = case_when(
       grepl('adult_', rep1) ~ stringr::str_split(rep1, 'adult_', simplify = TRUE)[, 2],
@@ -122,8 +107,18 @@ corr_long_t |>
       TRUE ~ rep1),
     rep2 = case_when(
       grepl('cortical_', rep2) ~ stringr::str_split(rep2, 'cortical_', simplify = TRUE)[, 2],
-      TRUE ~ rep2)) |>
-  
+      TRUE ~ rep2))
+```
+
+```{r}
+hc <- hclust(as.dist(1 - corr_mat_t))
+corr_long_t <- corr_long_t |>
+  mutate(rep1 = factor(rep1, levels = hc$labels[hc$order]), 
+         rep2 = factor(rep2, levels = hc$labels[hc$order]))
+```
+
+```{r}
+corr_long_t |>
   ggplot(aes(rep1, rep2, fill= correlation)) + 
     ggtitle('Transcriptomics data') +
     geom_tile(aes(fill = correlation), colour = "black") +
