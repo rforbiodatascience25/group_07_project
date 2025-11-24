@@ -1,0 +1,171 @@
+---
+title: "fig1e_louise"
+format: html
+editor: visual
+---
+
+## Replicating figure 1e from article
+
+Heres some info on the figure (from article):\
+*"RNA-Seq analysis of cultured cells and resulting density plots of gene expression levels. The density estimates of gene expression levels are shown for each cell type and for a combination over all cell types as indicated. The combined cell type was derived by extracting the largest expression value over all cell types. In all cell types, gene expression levels followed a binomial distribution (black). Gene expression filtered for RPKM \> 1 values are shown in blue"*
+
+![](images/clipboard-2755963945.png)
+
+Heres my script for the analysis
+
+```{r}
+library(tidyverse)
+```
+
+Notes:
+
+-   Data in figure 1e is from supp table 3
+
+-   Data is log2 transformed
+
+-   There are 5 classes of column names:
+
+    -   Oligodendrocytes (div1.1-1.3 + dic 2.5 1-3 + div 4 1-3)
+
+    -   Adult microglia 1-3
+
+    -   Atrocytes 1-3
+
+    -   Cortical neurons div05 (1-3) + dig 10 (1-3)
+
+    -   GeneName
+
+```{r}
+getwd()
+
+#Going back 1 step to open the file
+rna_data <- read_tsv("../data/dirty_data/supp_3.tsv", show_col_types = FALSE)
+
+#Checking the data again
+#summary(rna_data)
+
+#Removing NA's
+rna_data <- rna_data %>% 
+  drop_na()
+
+colnames(rna_data)
+head(rna_data, 10)
+```
+
+Data is read. Steps now:
+
+1\) Locate X and Y values (X=log2 RPKM, Y=density of these measurements, generated during ggplot)
+
+2\) Choose specific columns to use
+
+3\) Consider tidying the data more (from wide to long format (--\> make col names: Gene Name, Cell type, RPKM), using pivot_longer())
+
+4\) Log2 transform values (calculate + add additional column for this)
+
+5\) Make plot using ggplot2
+
+## Step 3: Tidying data
+
+```{r}
+#First: Tidying the data
+#Combining cell types across divisions, using pivot_longer
+rna_long <- rna_data %>%
+  pivot_longer(
+    cols = starts_with("RPKM"),
+    names_to = "Cell_Type",
+    values_to = "RPKM"
+  )
+
+colnames(rna_long)
+glimpse(rna_long, 10)
+print(rna_long)
+
+#Saving tidy data in .tsv format
+write_tsv(rna_long, "../data/fig1e_rna_long.tsv")
+```
+
+Inspecting the data, maybe more clean-up?\
+Or plot using parts of the name
+
+![](images/clipboard-2660787534.png)
+
+```{r}
+#Additional clean-up of row names (cell types)
+#Saving as new data
+rna_long_clean <- rna_long %>% 
+  mutate(
+    Cell_Type = case_when(
+      str_detect(Cell_Type, "Oligodendrocytes") ~ "Oligodendrocytes",
+      str_detect(Cell_Type, "Astrocytes") ~ "Astrocytes",
+      str_detect(Cell_Type, "microglia") ~ "Microglia",
+      str_detect(Cell_Type, "neurons") ~ "Neurons",
+      TRUE ~ "Other"
+    )
+  )
+
+head(rna_long_clean)
+
+#Checking for "Other" catagory
+rna_long_clean %>% 
+  count(Cell_Type)
+#None in other!
+
+
+#Saving new tidy data in .tsv format
+write_tsv(rna_long_clean, "../data/fig1e_rna_long_clean.tsv")
+```
+
+## Step 4: Log2 transform tidy data
+
+```{r}
+#Adding extra column with log2 values in tidy dataset
+rna_long_clean <- rna_long_clean %>% 
+  mutate(log2_RPKM = log2(RPKM)) 
+
+
+colnames(rna_long_clean)
+```
+
+## Step 5: Make density plot
+
+```{r}
+#Using ggplo2 (tidyverse)
+
+fig1e <- ggplot(rna_long_clean, 
+                aes(x = log2_RPKM, color = Cell_Type)) +
+  geom_density() + 
+  labs(
+    title = "Gene expression levels (RNA) per Cell Type",
+    x = expression("RPKM (log"["2"]*")"),
+    y = "Density"
+  ) +
+  theme_minimal()
+
+fig1e
+
+ggsave("../results/figure1e.png", fig1e)
+
+#TOO MANY ROWS REMOVED!
+summary(rna_long_clean$log2_RPKM)
+table(is.finite(rna_long_clean$log2_RPKM))
+
+table(rna_long_clean$RPKM == 0) # No 0 RPKM values
+
+summary(rna_data) #HEREs the reason, NAs were not proberly removed during prior clean-up
+```
+
+### Refining the plot
+
+```{r}
+#Plotting individually per cell type
+ggplot(rna_long_clean,
+       aes(x = log2_RPKM)) + 
+  geom_density() + 
+  facet_wrap(~ Cell_Type) + 
+  labs(
+    title = "Gene expression levels (RNA) per Cell Type",
+    x = expression("RPKM (log"["2"]*")"),
+    y = "Density"
+  ) + 
+  theme_minimal()
+```
