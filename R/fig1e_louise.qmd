@@ -169,3 +169,5 @@ ggplot(rna_long_clean,
   ) + 
   theme_minimal()
 ```
+
+## CHANGE PLOT - TAKE THE MEAN OF EACH TRIPLICETTE
