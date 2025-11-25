@@ -86,14 +86,9 @@ clean_2_brain_regions <- clean_2 |>
 clean_2_cerebellum_development <- clean_2 |>
   select(1:2, 18:20, 21:24)
 
-
-<<<<<<< HEAD
 #View(clean_2)
 #View(clean_2_cerebellum_development)
-=======
 
-
->>>>>>> 1457629cfb190e10baa90be5e49378d460373ecc
 ```
 
 # Cleaning table 3

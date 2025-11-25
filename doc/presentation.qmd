@@ -1,0 +1,45 @@
+---
+title: "presentation"
+format: revealjs
+editor: visual
+---
+
+# Introduction
+
+Marianna
+
+# Materials & Methods
+
+## Overall workflow (including data cleaning)
+
+Renata
+
+Louise
+
+Maria
+
+# Results
+
+## Louise
+
+sampletext
+
+## Marianna
+
+sampletext
+
+## Renata
+
+sampletext
+
+## Maria
+
+sampletext
+
+## Angel
+
+sampletext
+
+# Conclusion
+
+Angel
