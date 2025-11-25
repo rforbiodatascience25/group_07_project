@@ -13,6 +13,9 @@ library("pcaMethods")
 library("janitor")
 library("patchwork")
 library("ggrepel")
+
+#Source functions
+source("../R/99_proj_func.R")
 ```
 
 # Load data
@@ -44,10 +47,7 @@ numerical_brain_regions <- clean_regions |>
 #In the pcaMethods package there are different methods to analyse the data and handle NA's
 #Different methods allow for different % of missing values, let's check what's the percentage of our NA's:
 
-total_values = nrow(numerical_brain_regions) * ncol(numerical_brain_regions) 
-total_NAs = sum(is.na(clean_regions))
-NA_percentage = (total_NAs/total_values) * 100 
-NA_percentage 
+NA_check(clean_regions)
 
 #0% of cells are NAs! 
 #The best method then within the package to do the PCA is "svd"
