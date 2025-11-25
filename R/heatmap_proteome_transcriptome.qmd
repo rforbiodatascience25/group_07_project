@@ -22,13 +22,17 @@ library("ggplot2")
 ```
 
 ```{r}
-clean_3 <- read_tsv(file = "../data/clean_data/clean_3.tsv", show_col_types = FALSE)
-#View(clean_3)
-clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
-clean_5_separate_gene_names <- read_tsv(file = "../data/clean_data/clean_5_separate_gene_names.tsv", show_col_types = FALSE)
+# clean_3 <- read_tsv(file = "../data/clean_data/clean_3.tsv", show_col_types = FALSE)
+# #View(clean_3)
+# clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
+# clean_5_separate_gene_names <- read_tsv(file = "../data/clean_data/clean_5_separate_gene_names.tsv", show_col_types = FALSE)
 ```
 
 ```{r}
+aug_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_col_types = FALSE)
+
+aug_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE)
+
 ```
 
 ## Transforming the data for plotting
@@ -63,43 +67,43 @@ Also we can see that the on the X and Y axis there are cell types. In the table 
 ```
 
 ```{r}
-prot_prefixes <- c(
-  prot_microglia    = "adult_microglia_",
-  prot_astro        = "astrocytes_",
-  prot_neuron_div5  = "neurons_div05_",
-  prot_neuron_div10 = "neurons_div10_",
-  prot_oligo_div1   = "oligodendrocytes_div1_",
-  prot_oligo_div2_5 = "oligodendrocytes_div2_5_",
-  prot_oligo_div4   = "oligodendrocytes_div4_"
-)
+# prot_prefixes <- c(
+#   prot_microglia    = "adult_microglia_",
+#   prot_astro        = "astrocytes_",
+#   prot_neuron_div5  = "neurons_div05_",
+#   prot_neuron_div10 = "neurons_div10_",
+#   prot_oligo_div1   = "oligodendrocytes_div1_",
+#   prot_oligo_div2_5 = "oligodendrocytes_div2_5_",
+#   prot_oligo_div4   = "oligodendrocytes_div4_"
+# )
 ```
 
 ```{r}
-prot_for_plot <- clean_5 |> 
-  mutate(across(adult_microglia_1:oligodendrocytes_div4_3, log2p1)) |> # applying log2
-  mean_across_col(prot_prefixes) |> #df is provided by pipe
-  mutate(gene_name = gene_names) |> #renaming the column for future merging with rna df
-  select(gene_name, protein_names, prot_microglia:prot_oligo_div4) #saving only new cols and names 
-  
-prot_for_plot
+# prot_for_plot <- clean_5 |> 
+#   mutate(across(adult_microglia_1:oligodendrocytes_div4_3, log2p1)) |> # applying log2
+#   mean_across_col(prot_prefixes) |> #df is provided by pipe
+#   mutate(gene_name = gene_names) |> #renaming the column for future merging with rna df
+#   select(gene_name, protein_names, prot_microglia:prot_oligo_div4) #saving only new cols and names 
+#   
+# prot_for_plot
 ```
 
 ```{r}
 # writing a table to augmented data folder data/data_augmented in tsv format
-dir.create("../data/augmented_data", recursive = TRUE, showWarnings = FALSE)
-
-write_tsv(prot_for_plot, "../data/augmented_data/table_5_log_means.tsv")
+# dir.create("../data/augmented_data", recursive = TRUE, showWarnings = FALSE)
+# 
+# write_tsv(prot_for_plot, "../data/augmented_data/table_5_log_means.tsv")
 ```
 
 ### Transcriptome data
 
 ```{r}
-rna_for_plot <- clean_3 |>
-  mutate(across(starts_with("rpkm_"), log2p1)) |>   
-  mean_across_col(prot_prefixes) |> 
-  select(rna_oligo_div1:rna_neuron_div10, gene_name)
-
-rna_for_plot 
+# rna_for_plot <- clean_3 |>
+#   mutate(across(starts_with("rpkm_"), log2p1)) |>   
+#   mean_across_col(prot_prefixes) |> 
+#   select(rna_oligo_div1:rna_neuron_div10, gene_name)
+# 
+# rna_for_plot 
 ```
 
 ```{r}
@@ -135,7 +139,7 @@ Why the first gene in the annotation is the correct one to keep? In proteomics t
 ```
 
 ```{r}
-prot_one_gene <- prot_for_plot |> 
+prot_one_gene <- aug_5 |> 
   mutate(gene_name = str_split(gene_name, ";") |> map_chr(1)) #extracting the first gene and keeping it
 #prot_one_gene
 ```
@@ -157,7 +161,7 @@ prot_one_gene <- prot_for_plot |>
 ```
 
 ```{r}
-prot_rna_merged <- inner_join(prot_one_gene, rna_for_plot, by = "gene_name")
+prot_rna_merged <- inner_join(prot_one_gene, aug_3, by = "gene_name")
 prot_rna_merged # joined table with duplicates in protein names and it okay, no corr in data
 ```
 
