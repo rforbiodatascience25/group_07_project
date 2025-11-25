@@ -5,6 +5,11 @@ format: html
 
 # The **heatmap between proteome and transcriptome** across cell types.
 
+```{r}
+library("tidyverse")
+library("ggplot2")
+```
+
 ## Loading the data
 
 ```{r}
@@ -35,7 +40,7 @@ The values in the plot are log2 transformed so that's the transformation we are 
 Also we can see that the on the X and Y axis there are cell types. In the table there are 3 measurements for each cell type (adult_microglia_1, adult_microglia_2, adult_microglia_3). To get one value to compare cell types we will take the mean. That way we can get a more reliable estimate for each cell type by getting rid of experimental bias in each measurement and random noise.
 
 ```{r}
-log2p1 <- function(x) {log2(x + 1)}
+#log2p1 <- function(x) {log2(x + 1)}
 ```
 
 ```{r}

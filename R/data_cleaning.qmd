@@ -67,10 +67,7 @@ clean_2_brain_regions <- clean_2 |>
 clean_2_cerebellum_development <- clean_2 |>
   select(1:2, 18:20, 21:24)
 
-#View(clean_2)
-#View(clean_2_cerebellum_development)
 
-```
 
 # Cleaning table 3
 
@@ -80,7 +77,6 @@ Before removing NaN values, the data has: 19,501 entries After removing NaN valu
 
 Rename columns so they have more standard names
 
-```{r}
 #| echo: false
 
 dirty_3 <- read_tsv(file = "../data/dirty_data/supp_3.tsv")
