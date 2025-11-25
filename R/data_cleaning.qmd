@@ -24,7 +24,7 @@ source("../R/99_proj_func.R")
 
 -   Drop NAs (Check with the NA_check function)
 
-# Cleaning table 2
+# Cleaning table 2 + 3
 
 MAKE THESE COMMENTS LOOK NICER
 
@@ -71,11 +71,11 @@ clean_2_cerebellum_development <- clean_2 |>
 
 # Cleaning table 3
 
-MAKE THESE COMMENTS LOOK NICER
+#MAKE THESE COMMENTS LOOK NICER
 
-Before removing NaN values, the data has: 19,501 entries After removing NaN values, the data has: 11,062 entries
+#Before removing NaN values, the data has: 19,501 entries After removing NaN values, the data has: 11,062 entries
 
-Rename columns so they have more standard names
+#Rename columns so they have more standard names
 
 #| echo: false
 
@@ -96,17 +96,19 @@ clean_3 <- drop_na(
 ```{r}
 #| echo: false
 
-
 dirty_5 <- read_tsv(file = "../data/dirty_data/supp_5.tsv")
 
-#Deleting columns that we won't be using (Peptide, Mol. weight, Protein IDs and Majority Protein IDs) and renaming existing ones
 #Dropping duplicate gene_names (keeping the first one)
 
 clean_5 <- dirty_5 |> 
   select(-contains("young"), -PEP, - `Mol. weight [kDa]`, -`Protein IDs`, -`Majority protein IDs`) |> 
   clean_names() |> 
-  drop_na() |> 
   distinct(gene_names, .keep_all = T) 
+
+NA_check(clean_5) #0.32% of the values are NAs. So dropping NAs won't affect our results. 
+
+clean_5 <- clean_5 |> 
+  drop_na()
 
 #This table is with the separated gene names on each column. 
 #"Tidy data" but would mess up our numeric operations. Just in case we need it. 
@@ -118,13 +120,19 @@ clean_5_separate_gene_names <- clean_5 |>
 
 # Cleaning table 17
 
-MAKE THESE COMMENTS LOOK NICER
-
 ```{r}
 dirty_17 <- read_tsv(file = "../data/dirty_data/supp_17.tsv")
 
 clean_17 <- dirty_17 |> 
   clean_names() 
+
+NA_check(clean_17) #17.55% of the data is NAs
+#BUT if an NA check is conducted on the subset that will be used afterwards for the analysis, it doesn't have any NAs!
+
+NA_check(clean_17 |> 
+           select(14:23)) #0% NAs!!
+
+#So for this specific table it was decided that the NA drop can be skipped, since it would only hurt the analysis. 
 
 ```
 
