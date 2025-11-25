@@ -4,48 +4,29 @@ format: html
 edtiro: visual
 ---
 
-# Libraries
+# Libraries & Functions
 
 ```{r}
 library("tidyverse")
 library("dplyr")
 library("janitor")
+
+source("../R/99_proj_func.R")
 ```
 
-IF "YOUNG" IN DATA - ELIMINATE
+# General cleaning guidelines for this project
 
-# Cleaning table 1
+-   Subsetting columns that we're not going to use for this project.
 
-Discard iBAQ.
+-   Cleaning column names with the `janitor` library.
 
-LFQ intensity is the relative abundance of proteins with one another. Also keep the information on the right side of the table (peptides, etc.).
+-   Skip over the first and/or second lines of the excel files. (This is done on `data_loading.qmd` to have the appropiate data structure from the start).
 
-Clean NA's in protein names.
-
-Figure out how to handle unique names on both gene and protein names.
-
-Eliminate PEP column and Mol. weight.
-
-Rename columns to have standard names
-
-```{r}
-#| echo: false
-dirty_1 <- read_tsv(file = "../data/dirty_data/supp_1.tsv")
-```
-
-```{r}
-clean_1 <- dirty_1 |>
-  clean_names() |> 
-  select(-c(34:64, 67, 69)) |> 
-  mutate(
-    across(everything(), 
-    ~replace(., is.nan(.), NA))) |>
-  drop_na()
-
-nrow(clean_1)
-```
+-   Drop NAs (Check with the NA_check function)
 
 # Cleaning table 2
+
+MAKE THESE COMMENTS LOOK NICER
 
 Eliminate standard deviation part.
 
@@ -93,6 +74,8 @@ clean_2_cerebellum_development <- clean_2 |>
 
 # Cleaning table 3
 
+MAKE THESE COMMENTS LOOK NICER
+
 Before removing NaN values, the data has: 19,501 entries After removing NaN values, the data has: 11,062 entries
 
 Rename columns so they have more standard names
@@ -114,19 +97,14 @@ clean_3 <- drop_na(
 
 # Cleaning table 5
 
-Remove PEP, Mol. weight, Protein IDs and Majority Protein IDs.
-
-Some gene names have several inside with ";" as a separator, create a row for each.
-
-Rename columns to have standard names with janitor.
-
 ```{r}
 #| echo: false
 
+
 dirty_5 <- read_tsv(file = "../data/dirty_data/supp_5.tsv")
 
-#Deleting columns that we won't be using and renaming existing ones
-#Also dropping duplicate gene_names (keeping the first one)
+#Deleting columns that we won't be using (Peptide, Mol. weight, Protein IDs and Majority Protein IDs) and renaming existing ones
+#Dropping duplicate gene_names (keeping the first one)
 
 clean_5 <- dirty_5 |> 
   select(-contains("young"), -PEP, - `Mol. weight [kDa]`, -`Protein IDs`, -`Majority protein IDs`) |> 
@@ -135,7 +113,7 @@ clean_5 <- dirty_5 |>
   distinct(gene_names, .keep_all = T) 
 
 #This table is with the separated gene names on each column. 
-#"Tidy data" but would mess up our numeric operations. 
+#"Tidy data" but would mess up our numeric operations. Just in case we need it. 
 clean_5_separate_gene_names <- clean_5 |> 
   separate_longer_delim(cols = gene_names, delim = ";")
 
@@ -144,16 +122,14 @@ clean_5_separate_gene_names <- clean_5 |>
 
 # Cleaning table 17
 
+MAKE THESE COMMENTS LOOK NICER
+
 ```{r}
 dirty_17 <- read_tsv(file = "../data/dirty_data/supp_17.tsv")
 
 clean_17 <- dirty_17 |> 
-  clean_names() |> 
-  select(14:23) 
+  clean_names() 
 
-colnames(clean_17) <- (c("Brainstem", "Cerebellum", "Corpus callosum", "Motor cortex", 
-  "Olfactory bulb", "Optic nerve", "Prefrontal cortex", "Striatum", "Thalamus", 
-  "Hippocampus"))
 ```
 
 # Writing clean data to tables
@@ -161,19 +137,24 @@ colnames(clean_17) <- (c("Brainstem", "Cerebellum", "Corpus callosum", "Motor co
 Table 2 was separated in different ones to make data analysis easier, as not all data is necessary for all further plotting.
 
 ```{r}
+#Create directory in case it doesn't exist already 
 dir.create("../data/clean_data", recursive = TRUE, showWarnings = FALSE)
 
 write_tsv(clean_1, "../data/clean_data/clean_1.tsv")
 
 write_tsv(clean_2, "../data/clean_data/clean_2.tsv")
+
 write_tsv(clean_2_brain_regions, "../data/clean_data/clean_2_brain_regions.tsv")
+
 write_tsv(clean_2_cerebellum_development, "../data/clean_data/
           clean_2_cerebellum_development.tsv")
+
 write_tsv(clean_2_isolated_cells, "../data/clean_data/clean_2_isolated_cells.tsv")
 
 write_tsv(clean_3, "../data/clean_data/clean_3.tsv")
 
 write_tsv(clean_5, "../data/clean_data/clean_5.tsv")
+
 write_tsv(clean_5_separate_gene_names, "../data/clean_data/clean_5_separate_gene_names.tsv")
 
 write_tsv(clean_17, "../data/clean_data/clean_17.tsv")
