@@ -331,6 +331,11 @@
 </div>
 
 </section>
+<section id="libraries" class="title-slide slide level1 center">
+<h1>Libraries</h1>
+
+</section>
+
 <section id="introduction" class="title-slide slide level1 center">
 <h1>Introduction</h1>
 <p>Marianna</p>
@@ -370,8 +375,8 @@
 </section>
 <section id="angel" class="slide level2">
 <h2>Angel</h2>
-<p>sampletext</p>
-</section></section>
+
+<img data-src="presentation_files/figure-revealjs/unnamed-chunk-2-1.svg" class="r-stretch"></section></section>
 <section id="conclusion" class="title-slide slide level1 center">
 <h1>Conclusion</h1>
 <p>Angel</p>
@@ -591,6 +596,44 @@
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {

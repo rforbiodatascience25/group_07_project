@@ -27,7 +27,7 @@ clean_regions <- read_tsv(file = "../data/clean_data/clean_17.tsv")
 clean_regions <- clean_regions |> 
     select(14:23) 
 
-colnames(clean_17) <- (c("Brainstem", "Cerebellum", "Corpus callosum", "Motor cortex", 
+colnames(clean_regions) <- (c("Brainstem", "Cerebellum", "Corpus callosum", "Motor cortex", 
   "Olfactory bulb", "Optic nerve", "Prefrontal cortex", "Striatum", "Thalamus", 
   "Hippocampus"))
 ```
