@@ -44,11 +44,11 @@ cols <- c(
 )
 
 # Base theme applied to all panels
-
 base_theme <- theme_bw(base_size = 12) +
   theme(
     plot.title = element_text(face = "bold", size = 14),
-    legend.title = element_blank()
+    legend.title = element_blank(),
+    legend.text  = element_text(size = 14)
   )
 
 # Function that draws a single panel for a given cell type
@@ -104,6 +104,12 @@ combined <- p_astro + p_micro + p_neuron + p_oligo +
   theme(legend.position = "bottom")
 
 ggsave("../results/log2.jpg", 
+       combined, 
+       width = 18,
+       height = 10, 
+       dpi = 300)
+
+ggsave("../doc/presentation_files/figure-revealjs/log2.jpg", 
        combined, 
        width = 18,
        height = 10, 
