@@ -13,12 +13,16 @@ editor: visual
 all_df <- read_tsv("../data/augmented_data/table_2_log.tsv")
 
 #Defining the markers that we use for each cell type
+#These markers will be highlighted and labeled in the plots
+
 astro_markers       <- c("Aqp4", "Gfap", "Glast", "Aldh1l1")
 micro_markers       <- c("Iba1", "Tlr2", "Tlr7", "CD86")
 neuron_markers      <- c("Snap25", "Tubb3", "Calb1", "Syt1")
 oligo_markers       <- c("Cnp1", "Sox10", "Mbp", "Mag", "Mog", "Plp1")
 
-#Plotting
+#Selecting only the rows corresponding to marker genes.
+#These points will be labeled and colored in the plot using geom_text_repel()
+
 labels_df <- all_df |>
   group_by(type) |>
   filter(
@@ -29,6 +33,8 @@ labels_df <- all_df |>
   ) |>
   ungroup()
 
+#Customing color palette for each marker category
+
 cols <- c(
   "Astrocyte markers"       = "#1A9850",
   "Microglia markers"       = "#2B83BA",
@@ -37,35 +43,76 @@ cols <- c(
   "Other"                   = "grey70"
 )
 
+# Base theme applied to all panels
+
 base_theme <- theme_bw(base_size = 12) +
   theme(
     plot.title = element_text(face = "bold", size = 14),
     legend.title = element_blank()
   )
 
+# Function that draws a single panel for a given cell type
+# df_sub    = data for that cell type
+# df_labels = only the marker genes for labeling
+# panel_title = title shown above the panel
+
 draw_panel <- function(df_sub, df_labels, panel_title) {
+
   ggplot(df_sub, aes(x = logFC, y = logLFQ)) +
-    geom_hline(yintercept = median(df_sub$logLFQ, na.rm = TRUE), linetype="dashed", color="grey80") +
-    geom_vline(xintercept = 0, linetype="dashed", color="grey80") +
-    geom_point(aes(color = category), alpha = 0.55) +
+
+    # Add horizontal line at median LFQ of the cell type
+    geom_hline(
+      yintercept = median(df_sub$logLFQ, na.rm = TRUE),
+      linetype   = "dashed",
+      color      = "grey80"
+    ) +
+
+    # Add vertical line at logFC = 0 (median-normalized expression)
+    geom_vline(
+      xintercept = 0,
+      linetype   = "dashed",
+      color      = "grey80"
+    ) +
+
+    # Scatter points colored by protein category
+    geom_point(aes(color = category), alpha = 0.95) +
     scale_color_manual(values = cols) +
-    geom_text_repel(data = df_labels, aes(label = gene), size = 3) +
+
+    # Labels for selected marker genes
+    geom_text_repel(
+      data = df_labels,
+      aes(label = gene),
+      size = 3
+    ) +
+
+    # Axis labels and title
     labs(
       title = panel_title,
       x = "log2 fold expression (cell type vs median)",
       y = "log2 LFQ intensity"
     ) +
+
     base_theme
 }
+
+# Generating a panel for each cell type
+# Each panel uses its subset of data and its marker labels
 
 p_astro  <- draw_panel(all_df |> filter(type == "Astrocytes"),       labels_df |> filter(type == "Astrocytes"),       "Astrocytes")
 p_micro  <- draw_panel(all_df |> filter(type == "Microglia"),        labels_df |> filter(type == "Microglia"),        "Microglia")
 p_neuron <- draw_panel(all_df |> filter(type == "Neurons"),          labels_df |> filter(type == "Neurons"),          "Neurons")
 p_oligo  <- draw_panel(all_df |> filter(type == "Oligodendrocytes"), labels_df |> filter(type == "Oligodendrocytes"), "Oligodendrocytes")
 
+# Combining all four panels into a single figure
+# Arranging them in 2 rows and place the legend at the bottom
+
 combined <- p_astro + p_micro + p_neuron + p_oligo +
   plot_layout(nrow = 2, guides = "collect") &
   theme(legend.position = "bottom")
 
-ggsave("../results/Figure4_final.jpg", combined, width = 18, height = 10, dpi = 300)
+ggsave("../results/Figure4_final.jpg", 
+       combined, 
+       width = 18,
+       height = 10, 
+       dpi = 300)
 ```
