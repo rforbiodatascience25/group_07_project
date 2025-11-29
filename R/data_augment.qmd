@@ -107,8 +107,8 @@ rna_prefixes <- c(
 ```{r}
 aug_3 <- clean_3 |>
   mutate(across(starts_with("rpkm_"), log2p1)) |>  # log2(x+1) on all rpkm columns
-  mean_across_col(rna_prefixes) |>                 # calculate means per cell type
-  select(rna_oligo_div1:rna_neuron_div10, gene_name)
+  mean_across_col(rna_prefixes) #|>                 # calculate means per cell type
+  # select(rna_oligo_div1:rna_neuron_div10, gene_name)
 
 #aug_3 
 ```
@@ -142,8 +142,8 @@ prot_prefixes <- c(
 aug_5 <- clean_5 |> 
   mutate(across(adult_microglia_1:oligodendrocytes_div4_3, log2p1)) |> # applying log2
   mean_across_col(prot_prefixes) |> #df is provided by pipe
-  mutate(gene_name = gene_names) |> #renaming the column for future merging with rna df
-  select(gene_name, protein_names, prot_microglia:prot_oligo_div4) #saving only new cols and names 
+  mutate(gene_name = gene_names) #|> #renaming the column for future merging with rna df
+  # select(gene_name, protein_names, prot_microglia:prot_oligo_div4) #saving only new cols and names 
   
 aug_5
 ```
