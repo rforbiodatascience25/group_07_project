@@ -1,0 +1,32 @@
+---
+title: "data_descriptive"
+format: html
+editor: visual
+---
+
+# Data 2 - Maria
+
+# Data 3 - Louise
+
+# Data 5 - Renata & Marianna
+
+```{r}
+clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
+head(clean_5)
+```
+
+The clean_5 data frame contains protein expression data of cultured cell types per individual replicate. The data is expressed in log LFQ intensity, a metric used to compare the abundance of the **same protein** across multiple samples or conditions. This relative measure allows us to both validate our replicates, and to determine the preferential expression of each cultured cell type.
+
+For these goals, we are interested only in columns 1-29, while we can discard information about sequence coverage, molecular weight, and protein IDs.
+
+# Data 17 - Angel
+
+```{r}
+head(clean_17)
+```
+
+This data frame currently has a lot of columns which describe the intensity of RNA signal and proteins in different regions of the mouse brain.
+
+We're specially interested in the columns that describe the intensity of proteins. For this, the columns from 14 to 23 contain the right data.
+
+For the PCA, the only needed data is the brain region and the intensity of signal, so the genes, protein names and everything can be dropped for the analysis.

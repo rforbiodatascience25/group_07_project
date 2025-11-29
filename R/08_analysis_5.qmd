@@ -13,7 +13,6 @@ oligodendrocyte_markers <- c("Cnp1", "Sox10", "Mbp", "Mag", "Mog", "Plp1") |> to
 neuron_markers          <- c("Snap25", "Tubb3", "Calb1", "Syt1") |> toupper()
 microglia_markers       <- c("Iba1", "Tlr2", "Tlr7", "CD86") |> toupper()
 
-#Now I can omit this part since I added it to the data cleaning
 clean_cells <- clean_2 |>
   select(
     gene    = 1,
