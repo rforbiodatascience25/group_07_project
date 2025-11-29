@@ -11,14 +11,16 @@ Libraries
 library(tidyverse)
 library(ggplot2)
 library(hrbrthemes)
+
+source("../R/99_proj_func.R")
 ```
 
 Data reading
 
 ```{r}
 #| echo: false
-clean_3 <- read_tsv(file = "../data/clean_data/clean_3.tsv", show_col_types = FALSE)
-clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
+clean_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_col_types = FALSE)
+clean_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE)
 ```
 
 Proteomics data
@@ -26,37 +28,13 @@ Proteomics data
 ```{r}
 clean_5 <- clean_5 |> 
   select(c(3:26)) |>
-  mutate(across(everything(), as.numeric))
+  mutate(across(everything(), as.numeric)) |>
+  rename_with(~ str_remove(.x, "adult_"))
 ```
 
 ```{r}
 corr_mat_p <- cor(clean_5, use = "pairwise.complete.obs", method = "pearson")
-
-corr_long_p <- corr_mat_p |>
-  as.data.frame() |>
-  rownames_to_column("rep1") |>
-  pivot_longer(
-    cols = -rep1,
-    names_to = "rep2",
-    values_to = "correlation"
-  )
-
-corr_long_p <- corr_long_p |>
-  mutate(
-    rep1 = case_when(
-      grepl('adult_', rep1) ~ stringr::str_split(rep1, 'adult_', simplify = TRUE)[, 2],
-      TRUE ~ rep1),
-    rep2 = case_when(
-      grepl('adult_', rep2) ~ stringr::str_split(rep2, 'adult_', simplify = TRUE)[, 2],
-      TRUE ~ rep2))
-```
-
-```{r}
-hc <- hclust(as.dist(1 - corr_mat_p))
-
-corr_long_p <- corr_long_p |>
-  mutate(rep1 = factor(rep1, levels = hc$labels[hc$order]), 
-         rep2 = factor(rep2, levels = hc$labels[hc$order]))
+corr_long_p <- cluster_cor_mat(corr_mat_p)
 ```
 
 ```{r}
@@ -76,45 +54,15 @@ Transriptomics data
 clean_3 <- clean_3 |> 
   select(c(1:21)) |>
   mutate(across(everything(), as.numeric)) |>
-  rename_with(
-    .fn = ~stringr::str_replace(.x, "rpkm_", ""), 
-    .cols = starts_with("rpkm_")
-  )
+  rename_with(~ .x |>
+                str_replace("rpkm_", "") |>
+                str_remove("adult_") |>
+                str_remove("cortical_"))
 ```
 
 ```{r}
 corr_mat_t <- cor(clean_3, use = "pairwise.complete.obs", method = "pearson")
-
-corr_long_t <- corr_mat_t |>
-  as.data.frame() |>
-  rownames_to_column("rep1") |>
-  pivot_longer(
-    cols = -rep1,
-    names_to = "rep2",
-    values_to = "correlation"
-  )
-
-corr_long_t <- corr_long_t |>
-  mutate(
-    rep1 = case_when(
-      grepl('adult_', rep1) ~ stringr::str_split(rep1, 'adult_', simplify = TRUE)[, 2],
-      TRUE ~ rep1),
-    rep2 = case_when(
-      grepl('adult_', rep2) ~ stringr::str_split(rep2, 'adult_', simplify = TRUE)[, 2],
-      TRUE ~ rep2),
-    rep1 = case_when(
-      grepl('cortical_', rep1) ~ stringr::str_split(rep1, 'cortical_', simplify = TRUE)[, 2],
-      TRUE ~ rep1),
-    rep2 = case_when(
-      grepl('cortical_', rep2) ~ stringr::str_split(rep2, 'cortical_', simplify = TRUE)[, 2],
-      TRUE ~ rep2))
-```
-
-```{r}
-hc <- hclust(as.dist(1 - corr_mat_t))
-corr_long_t <- corr_long_t |>
-  mutate(rep1 = factor(rep1, levels = hc$labels[hc$order]), 
-         rep2 = factor(rep2, levels = hc$labels[hc$order]))
+corr_long_t <- cluster_cor_mat(corr_mat_t)
 ```
 
 ```{r}

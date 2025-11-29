@@ -47,27 +47,12 @@ mean_across_col <- function(df, prefixes) {
 }
 
 
-## Function for renaming replicates in Figure2a (readability and comparability) 
+## Function that takes a correlation matrix and outputs the clustered long-format dataframe
 
-strip_pattern <- function(df, pattern) {
-  # pattern : pattern to remove from replicates names 
-  df |>
-    mutate(
-      rep1 = ifelse(grepl(pattern, rep1),
-                    stringr::str_remove(rep1, pattern),
-                    rep1),
-      rep2 = ifelse(grepl(pattern, rep2),
-                    stringr::str_remove(rep2, pattern),
-                    rep2)
-    )
-}
-
-
-## Function that takes a correlation matrix and outputs the long-format dataframe
-
-cor_mat_to_long <- function(corr_mat, rowname_col = "rep1",
+cor_mat_to_long <- function(cor_mat, rowname_col = "rep1",
                             value_col = "correlation") {
-  corr_mat |>
+  
+  cor_mat |>
     as.data.frame() |>
     rownames_to_column(rowname_col) |>
     pivot_longer(
@@ -75,4 +60,23 @@ cor_mat_to_long <- function(corr_mat, rowname_col = "rep1",
       names_to = "rep2",
       values_to = value_col
     )
+}
+
+## Function to cluster columns in a correlation matrix
+cluster_cor_mat <- function(cor_mat) {
+  
+  # cluster using 1 - correlation
+  hc <- hclust(as.dist(1 - cor_mat))
+  
+  # convert to long
+  cor_long <- cor_mat_to_long(cor_mat)
+  
+  # apply cluster order
+  cor_long <- cor_long |>
+    mutate(
+      rep1 = factor(rep1, levels = hc$labels[hc$order]),
+      rep2 = factor(rep2, levels = hc$labels[hc$order])
+    )
+  
+  return(cor_long)
 }
