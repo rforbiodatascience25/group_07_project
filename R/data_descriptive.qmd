@@ -19,6 +19,41 @@ The clean_5 data frame contains protein expression data of cultured cell types p
 
 For these goals, we are interested only in columns 1-29, while we can discard information about sequence coverage, molecular weight, and protein IDs.
 
+```{r}
+view(clean_5)
+```
+
+```{r}
+stat_5 <- clean_5 |> 
+  select(where(is.numeric)) |>    # choosing the numeric columns
+  pivot_longer(everything(),
+               names_to = "columns",
+               values_to = "value") |> 
+  group_by(columns) |> 
+  summarise(
+    count = n(),
+    mean = mean(value, na.rm = TRUE),
+    median = median(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE),
+    min = min(value, na.rm = TRUE),
+    max = max(value, na.rm = TRUE)
+  )
+
+stat_5
+```
+
+```{r}
+per_protein_stat <- clean_5 |> 
+  rowwise() |> 
+  mutate(
+    mean = mean(c_across(where(is.numeric)), na.rm = TRUE),
+    sd = sd(c_across(where(is.numeric)), na.rm = TRUE)
+  ) |> 
+  select(gene_names, protein_names, mean, sd)
+
+per_protein_stat
+```
+
 # Data 17 - Angel
 
 ```{r}
