@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-Libraries
+## Libraries
 
 ```{r}
 #| echo: false
@@ -15,7 +15,7 @@ library(hrbrthemes)
 source("../R/99_proj_func.R")
 ```
 
-Data reading
+## Data loading
 
 ```{r}
 #| echo: false
@@ -23,7 +23,7 @@ clean_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_
 clean_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE)
 ```
 
-Proteomics data
+## Proteomics data
 
 ```{r}
 clean_5 <- clean_5 |> 
@@ -48,7 +48,7 @@ corr_long_p |>
           plot.title = element_text(face = "bold", hjust = 0.5)) 
 ```
 
-Transriptomics data
+## Transriptomics data
 
 ```{r}
 clean_3 <- clean_3 |> 
