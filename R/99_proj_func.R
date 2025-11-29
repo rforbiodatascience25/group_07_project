@@ -46,3 +46,33 @@ mean_across_col <- function(df, prefixes) {
   df
 }
 
+
+## Function for renaming replicates in Figure2a (readability and comparability) 
+
+strip_pattern <- function(df, pattern) {
+  # pattern : pattern to remove from replicates names 
+  df |>
+    mutate(
+      rep1 = ifelse(grepl(pattern, rep1),
+                    stringr::str_remove(rep1, pattern),
+                    rep1),
+      rep2 = ifelse(grepl(pattern, rep2),
+                    stringr::str_remove(rep2, pattern),
+                    rep2)
+    )
+}
+
+
+## Function that takes a correlation matrix and outputs the long-format dataframe
+
+cor_mat_to_long <- function(corr_mat, rowname_col = "rep1",
+                            value_col = "correlation") {
+  corr_mat |>
+    as.data.frame() |>
+    rownames_to_column(rowname_col) |>
+    pivot_longer(
+      cols = -all_of(rowname_col),
+      names_to = "rep2",
+      values_to = value_col
+    )
+}
