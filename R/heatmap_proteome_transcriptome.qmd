@@ -227,6 +227,7 @@ ggplot(corr_df, aes(x = transcriptome, y = proteome, fill = corr)) +
     panel.grid = element_blank() #no grid lines inside the panel
   ) +
   labs(
+    title = "Correlation Between Transcriptome and Proteome",
     x = "Transcriptome (log2 RPKM)",
     y = "Proteome (log2 LFQ)",
     fill = "Pearson correlation"
