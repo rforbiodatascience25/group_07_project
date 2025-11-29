@@ -24,6 +24,14 @@ view(clean_5)
 ```
 
 ```{r}
+zeros <- clean_5 |> 
+  select(where(is.numeric)) |> 
+  summarise(across(everything(), function(x) mean(x == 0)))
+
+stat_5
+```
+
+```{r}
 stat_5 <- clean_5 |> 
   select(where(is.numeric)) |>    # choosing the numeric columns
   pivot_longer(everything(),
@@ -37,7 +45,7 @@ stat_5 <- clean_5 |>
     sd = sd(value, na.rm = TRUE),
     min = min(value, na.rm = TRUE),
     max = max(value, na.rm = TRUE)
-  )
+  ) 
 
 stat_5
 ```
@@ -52,6 +60,10 @@ per_protein_stat <- clean_5 |>
   select(gene_names, protein_names, mean, sd)
 
 per_protein_stat
+```
+
+```{r}
+
 ```
 
 # Data 17 - Angel
