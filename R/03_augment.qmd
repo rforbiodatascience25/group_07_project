@@ -99,12 +99,15 @@ rna_prefixes <- c(
 )
 ```
 
+The values in the plots are **log2 transformed** so that's the transformation we are going to apply to proteome and transcriptome. We will use the **log2p1** function from 99_proj_func.R.
+
+Also we can see that the there are cell types used im most of the plots. In the table there are 3 measurements for each cell type (adult_microglia_1, adult_microglia_2, adult_microglia_3). To get one value to compare cell types we will **take the mean**. That way we can get a more reliable estimate for each cell type by getting rid of experimental bias in each measurement and random noise. We are doing it using the **mean_across_col** function from 99_proj_func.R.
+
 ```{r}
 aug_3 <- clean_3 |>
   mutate(across(starts_with("rpkm_"), log2p1)) |>  # log2(x+1) on all rpkm columns
   mean_across_col(rna_prefixes) #|>                 # calculate means per cell type
-  # select(rna_oligo_div1:rna_neuron_div10, gene_name)
-
+  # as an output we will have the old columns + mean columns for each cell type
 ```
 
 ```{r}
@@ -130,12 +133,14 @@ prot_prefixes <- c(
 )
 ```
 
+We will do the same transformations to table 5 as we did to table 3.
+
 ```{r}
 aug_5 <- clean_5 |> 
   mutate(across(adult_microglia_1:oligodendrocytes_div4_3, log2p1)) |> # applying log2
   mean_across_col(prot_prefixes) |> #df is provided by pipe
   mutate(gene_name = gene_names) #|> #renaming the column for future merging with rna df
-  # select(gene_name, protein_names, prot_microglia:prot_oligo_div4) #saving only new cols and names 
+  # as an output we will have the old columns + mean columns for each cell type
 
 ```
 

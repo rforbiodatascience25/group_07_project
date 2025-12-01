@@ -47,15 +47,9 @@ sampletext
 
 sampletext
 
-## Renata
-
-#### Correlation Heatmap
+## Correlation Heatmap
 
 ![](images/Heatmap_tr_prt.jpg)
-
-```{r}
-
-```
 
 ## Maria
 
