@@ -25,7 +25,7 @@ source("../R/99_proj_func.R")
 
 Marianna
 
-##  
+## 
 
 ![](images/clipboard-1107948132.png){width="3600"}
 
@@ -42,7 +42,6 @@ knitr::include_graphics("../results/RNA_density_plot_combined.png")
 ## Marianna
 
 ![](images/Screenshot%202025-12-01%20at%2019.58.33.png)
-
 
 ## Correlation Heatmap
 
