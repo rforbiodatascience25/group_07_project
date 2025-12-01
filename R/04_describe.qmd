@@ -30,38 +30,6 @@ To evaluate enrichment of each protein in a given cell type, we compute a **refe
 
 This augmented dataset enables identification of **cell-type enriched proteins** and potential **marker candidates**, in line with the analyses presented in Figure 4b of the original publication.
 
-When computing the proportion of zeros, we realize that our data contains no cells with value zero.
-
-```{r}
-clean_2 <- read_tsv(file = "../data/clean_data/clean_2.tsv", show_col_types = FALSE)
-
-# Calculate proportion of zeros in each numeric column
-zeros <- clean_2 |> 
-  select(where(is.numeric)) |> 
-  summarise(across(everything(), ~ mean(.x == 0, na.rm = TRUE)))
-
-zeros
-
-zeros_long <- zeros |> 
-  pivot_longer(
-    everything(),
-    names_to = "sample",
-    values_to = "zero_fraction"
-  )
-
-ggplot(zeros_long, aes(x = sample, y = zero_fraction)) +
-  geom_col(fill = "steelblue") +
-  coord_flip() +
-  labs(
-    title = "Fraction of Zero Log2 LFQ Values per Cell Type",
-    y = "Proportion of zeros",
-    x = "Sample"
-  ) +
-  theme_minimal(base_size = 13)
-
-
-```
-
 If we compute the proportion of NAs, we get that more than a third of the data is formed by NAs. However, they are not removed at this point, because we re interested in the differences across cell types. When the difference across cell types (log fold change) is NA, is then removed.
 
 ```{r}

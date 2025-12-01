@@ -56,7 +56,7 @@ clean_5 <- clean_5 |>
 corr_mat_p <- cor(clean_5, use = "pairwise.complete.obs", method = "pearson")
 corr_long_p <- cluster_cor_mat(corr_mat_p)
 
-corr_long_p |>
+p_prot <- corr_long_p |>
   ggplot(aes(rep1, rep2, fill= correlation)) + 
     ggtitle('Proteomics data') +
     geom_tile(aes(fill = correlation), colour = "black") +
@@ -74,8 +74,8 @@ clean_3 <- clean_3 |>
                 str_remove("cortical_"))
 corr_mat_t <- cor(clean_3, use = "pairwise.complete.obs", method = "pearson")
 corr_long_t <- cluster_cor_mat(corr_mat_t)
-corr_long_t |>
-  
+
+p_trans <- corr_long_t |>
   ggplot(aes(rep1, rep2, fill= correlation)) + 
     ggtitle('Transcriptomics data') +
     geom_tile(aes(fill = correlation), colour = "black") +
@@ -84,6 +84,16 @@ corr_long_t |>
           axis.title = element_blank(),
           plot.title = element_text(face = "bold", hjust = 0.5)) 
 ```
+
+::::: columns
+::: {.column width="50%"}
+p_prot
+:::
+
+::: {.column width="50%"}
+p_trans
+:::
+:::::
 
 ## Correlation Heatmap
 
@@ -169,15 +179,13 @@ heatmap_tr_prt
 ## Maria
 
 ```{r}
-all_df <- read_tsv("../data/augmented_data/table_2_log.tsv")
-
-#Defining the markers that we use for each cell type
-#These markers will be highlighted and labeled in the plots
-
+#Adding the markers of each cell type
 astro_markers       <- c("Aqp4", "Gfap", "Glast", "Aldh1l1")
 micro_markers       <- c("Iba1", "Tlr2", "Tlr7", "CD86")
 neuron_markers      <- c("Snap25", "Tubb3", "Calb1", "Syt1")
 oligo_markers       <- c("Cnp1", "Sox10", "Mbp", "Mag", "Mog", "Plp1")
+
+all_df <- read_tsv("../data/augmented_data/table_2_log.tsv", show_col_types = FALSE)
 
 #Selecting only the rows corresponding to marker genes.
 #These points will be labeled and colored in the plot using geom_text_repel()
@@ -203,49 +211,14 @@ cols <- c(
 )
 
 # Base theme applied to all panels
-
 base_theme <- theme_bw(base_size = 12) +
   theme(
     plot.title = element_text(face = "bold", size = 14),
-    legend.title = element_blank()
+    legend.title = element_blank(),
+    legend.text  = element_text(size = 14)
   )
 
-# Function that draws a single panel for a given cell type
-# df_sub    = data for that cell type
-# df_labels = only the marker genes for labeling
-# panel_title = title shown above the panel
 
-draw_panel <- function(df_sub, df_labels, panel_title) {
-
-  ggplot(df_sub, aes(x = logFC, y = logLFQ)) +
-
-    # Scatter points colored by protein category
-    geom_point(aes(color = category), alpha = 0.95) +
-    scale_color_manual(values = cols) +
-
-    # Add vertical line at logFC = 0 (median-normalized expression)
-    geom_vline(
-      xintercept = 0,
-      linetype   = "dashed",
-      color      = "black"
-    ) +
-
-    # Labels for selected marker genes
-    geom_text_repel(
-      data = df_labels,
-      aes(label = gene),
-      size = 3
-    ) +
-
-    # Axis labels and title
-    labs(
-      title = panel_title,
-      x = "log2 fold expression (cell type vs median)",
-      y = "log2 LFQ intensity"
-    ) +
-
-    base_theme
-}
 
 # Generating a panel for each cell type
 # Each panel uses its subset of data and its marker labels
@@ -268,7 +241,11 @@ ggsave("../results/log2.jpg",
        height = 10, 
        dpi = 300)
 
-combined
+ggsave("../doc/presentation_files/figure-revealjs/log2.jpg", 
+       combined, 
+       width = 18,
+       height = 10, 
+       dpi = 300)
 ```
 
 ## Principal Component Analysis
