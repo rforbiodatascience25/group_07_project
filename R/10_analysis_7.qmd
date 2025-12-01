@@ -8,13 +8,14 @@ editor: visual
 library(tidyverse)
 library(ggplot2)
 library(ggrepel)
+
+source("../R/99_proj_func.R")
 ```
 
 ```{r}
 #| echo: false
 clean_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_col_types = FALSE)
 clean_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE)
-
 ```
 
 ```{r}
