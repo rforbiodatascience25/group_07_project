@@ -50,6 +50,15 @@ sampletext
 ## Correlation Heatmap
 
 ```{r}
+aug_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv",
+                  show_col_types = FALSE) |> 
+  select(rna_oligo_div1:rna_neuron_div10, gene_name)
+
+aug_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv",
+                  show_col_types = FALSE) |> 
+  select(gene_name, protein_names, prot_microglia:prot_oligo_div4) 
+
+
 prot_one_gene <- aug_5 |> 
   mutate(gene_name = str_split(gene_name, ";") |> map_chr(1))
 

@@ -10,36 +10,6 @@ editor: visual
 library(tidyverse)
 ```
 
-##### Important notes
-
--   The data is extracted from supplementary table 3
-
-    -   The dataset has been cleaned + augmented prior to this script
-
-    -   All data within RPKM columns is already log2 transformed
-
-    -   Means of cell type specific gene expression is already calculated and stored within RNA columns
-
--   There are 3 overall classes of column names:
-
-    -   Gene name
-
-    -   Cell type
-
-    -   RNA mean
-
--   Within the cell type category, the following cells are stored
-
-    -   Oligodendrocytes (div1_1-1_3 + div 2_5 1-3 + div 4 1-3)
-
-    -   Adult microglia 1-3
-
-    -   Atrocytes 1-3
-
-    -   Cortical neurons div05 (1-3) + dig 10 (1-3)
-
--   RPKM (reads per kilobase of transcript per million mapped reads) is the unit used to measure gene expression of RNA
-
 ```{r}
 getwd()
 

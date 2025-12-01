@@ -76,6 +76,8 @@ microglia_markers       <- c("Aif1", "Tlr2", "Tlr7", "Cd86")
 ### Plotting
 
 ```{r}
+#| warning: false
+
 astro_plot_density <- plot_rank_rank_comparison(
   marker_list = astrocyte_markers,
   cell_type_name = "Astrocyte",

@@ -4,9 +4,9 @@ format: html
 editor: visual
 ---
 
-The expression data used in this project was retrieved from Supplementary tables 1, 2, 3, 5, and 17 of [*(Sharma et. al, 2015)*](https://www.nature.com/articles/nn.4160#Sec12)*.* Tables 1, 2, 5, and 17 collect protein expression data normalized as log LFQ intensity, a metric used to compare the abundance of the **same protein** across multiple samples or conditions. Table 3 presents RNA-sequencing data expressed in RPKM (Reads Per Kilobase of transcript per Million mapped reads). In tables 1, 2, 3, and 5, each of the main cell types (neurons, oligodendrocytes, microglia, and astrocytes) has three technical replicated. In case of cultures cells, oligodendrocytes and neurons are also repeated at different numbers of days in vitro (div).
+The expression data used in this project was retrieved from Supplementary tables 2, 3, 5, and 17 of [*(Sharma et. al, 2015)*](https://www.nature.com/articles/nn.4160#Sec12)*.* Tables 2, 5, and 17 collect protein expression data normalized as log LFQ intensity, a metric used to compare the abundance of the **same protein** across multiple samples or conditions. Table 3 presents RNA-sequencing data expressed in RPKM (Reads Per Kilobase of transcript per Million mapped reads). In tables 2, 3, and 5, each of the main cell types (neurons, oligodendrocytes, microglia, and astrocytes) has three technical replicated. In case of cultures cells, oligodendrocytes and neurons are also repeated at different numbers of days in vitro (div).
 
-# Data 2 - Maria
+# Data 2 
 
 The `clean_2` data frame contains log₂ LFQ protein intensities measured in four purified mouse brain cell types: **astrocytes, microglia, neurons**, and **oligodendrocytes**. LFQ is a metric used to represent the relative abundance of each protein across the different cell-type samples.
 
@@ -30,9 +30,39 @@ To evaluate enrichment of each protein in a given cell type, we compute a **refe
 
 This augmented dataset enables identification of **cell-type enriched proteins** and potential **marker candidates**, in line with the analyses presented in Figure 4 of the original publication.
 
-# Data 3 - Louise
+# Data 3 
 
-# Data 5 - Renata & Marianna
+##### Important notes
+
+-   The data is extracted from supplementary table 3
+
+    -   The dataset has been cleaned + augmented prior to this script
+
+    -   All data within RPKM columns is already log2 transformed
+
+    -   Means of cell type specific gene expression is already calculated and stored within RNA columns
+
+-   There are 3 overall classes of column names:
+
+    -   Gene name
+
+    -   Cell type
+
+    -   RNA mean
+
+-   Within the cell type category, the following cells are stored
+
+    -   Oligodendrocytes (div1_1-1_3 + div 2_5 1-3 + div 4 1-3)
+
+    -   Adult microglia 1-3
+
+    -   Atrocytes 1-3
+
+    -   Cortical neurons div05 (1-3) + dig 10 (1-3)
+
+-   RPKM (reads per kilobase of transcript per million mapped reads) is the unit used to measure gene expression of RNA
+
+# Data 5 
 
 ```{r}
 clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
@@ -120,7 +150,7 @@ ggplot(per_protein_stat, aes(x = mean)) +
 table(sub("_[^_]+$", "", names(clean_5)[sapply(clean_5, is.numeric)]))
 ```
 
-# Data 17 - Angel
+# Data 17 
 
 ```{r}
 head(clean_17)

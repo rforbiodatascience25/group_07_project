@@ -1,5 +1,5 @@
 ---
-title: "Figure2a"
+title: "Correlation Matrix"
 format: html
 editor: visual
 ---
@@ -42,7 +42,7 @@ corr_long_p <- cluster_cor_mat(corr_mat_p)
 ### Plotting
 
 ```{r}
-corr_long_p |>
+proteomics <- corr_long_p |>
   ggplot(aes(rep1, rep2, fill= correlation)) + 
     ggtitle('Proteomics data') +
     geom_tile(aes(fill = correlation), colour = "black") +
@@ -50,13 +50,15 @@ corr_long_p |>
     theme(axis.text.x = element_text(angle = 45, hjust = 1), 
           axis.title = element_blank(),
           plot.title = element_text(face = "bold", hjust = 0.5)) 
+
+ggsave(file = "../results/Proteomics_Heatmap.jpg", plot = proteomics)
 ```
 
 ## Transriptomics data
 
 ```{r}
 clean_3 <- clean_3 |> 
-  select(c(1:21)) |>
+  select(c(2:22)) |>
   mutate(across(everything(), as.numeric)) |>
   rename_with(~ .x |>
                 str_replace("rpkm_", "") |>
@@ -74,7 +76,7 @@ corr_long_t <- cluster_cor_mat(corr_mat_t)
 ### Plotting
 
 ```{r}
-corr_long_t |>
+transcriptomics <- corr_long_t |>
   ggplot(aes(rep1, rep2, fill= correlation)) + 
     ggtitle('Transcriptomics data') +
     geom_tile(aes(fill = correlation), colour = "black") +
@@ -82,4 +84,6 @@ corr_long_t |>
     theme(axis.text.x = element_text(angle = 45, hjust = 1), 
           axis.title = element_blank(),
           plot.title = element_text(face = "bold", hjust = 0.5)) 
+
+ggsave(file = "../results/Transcriptomics_Heatmap.jpg", plot = transcriptomics)
 ```
