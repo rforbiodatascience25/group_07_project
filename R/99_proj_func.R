@@ -106,7 +106,6 @@ plot_rank_rank_comparison <- function(
     }} +
     
     geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "red", linewidth = 1) +
-    
     geom_point(data = marker_data, color = "red", size = 3) +
     geom_text_repel(
       data = marker_data, 
@@ -114,18 +113,13 @@ plot_rank_rank_comparison <- function(
       color = "red",
       size = 4, 
       max.overlaps = Inf, 
-      segment.color = 'gray50'
-    ) +
-    
+      segment.color = 'gray50') +
     scale_x_continuous(limits = c(0, plot_limit), expand = c(0, 0)) +
     scale_y_continuous(limits = c(0, plot_limit), expand = c(0, 0)) + 
     coord_equal() + 
-    
-    labs(
-      title = paste("Rank-Rank Comparison:", cell_type_name, "RNA vs. Protein"),
+    labs(title = paste("Rank-Rank Comparison:", cell_type_name, "RNA vs. Protein"),
       x = "RNA rank (Low rank = High expression)",
-      y = "Protein rank (Low rank = High abundance)"
-    ) +
+      y = "Protein rank (Low rank = High abundance)") +
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5))
   
