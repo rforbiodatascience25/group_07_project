@@ -31,13 +31,7 @@ Marianna
 
 ## Overall workflow (including data cleaning)
 
-![](images/clipboard-1107948132.png)
-
-Renata
-
-Louise
-
-Maria
+![](images/clipboard-1107948132.png){width="2993"}
 
 # Results
 
