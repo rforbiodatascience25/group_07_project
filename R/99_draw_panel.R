@@ -1,4 +1,9 @@
 # Function to plot the log2 fold expression for a given cell type
+# Function that draws a single panel for a given cell type
+# df_sub    = data for that cell type
+# df_labels = only the marker genes for labeling
+# panel_title = title shown above the panel
+
 draw_panel <- function(df_sub, df_labels, panel_title) {
   
   # Initializing the ggplot using the subset of data for the cell type (df_sub)
