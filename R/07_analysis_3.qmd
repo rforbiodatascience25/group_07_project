@@ -216,15 +216,15 @@ corr_df <- corr_df |>
 ```
 
 ```{r}
-ggplot(corr_df, aes(x = transcriptome, y = proteome, fill = corr)) +
-  geom_tile() + #draws one rectangle per row
+heatmap_tr_prt <- ggplot(corr_df, aes(x = transcriptome, y = proteome, fill = corr)) +
+  geom_tile() +
   geom_text(aes(label = sprintf("%.2f", corr)), size = 3) +
   scale_fill_gradient2(low = "steelblue", mid = "white", high = "darkred",
                        midpoint = 0.30) +
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
-    panel.grid = element_blank() #no grid lines inside the panel
+    panel.grid = element_blank()
   ) +
   labs(
     title = "Correlation Between Transcriptome and Proteome",
@@ -233,4 +233,10 @@ ggplot(corr_df, aes(x = transcriptome, y = proteome, fill = corr)) +
     fill = "Pearson correlation"
   )
 
+heatmap_tr_prt
+
+```
+
+```{r}
+ggsave(filename = "Heatmap_tr_prt.jpg", plot = heatmap_tr_prt, path = "../results", width = 8, height = 6)
 ```
