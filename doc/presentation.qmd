@@ -179,6 +179,12 @@ heatmap_tr_prt
 ## Maria
 
 ```{r}
+#Adding the markers of each cell type
+astro_markers       <- c("Aqp4", "Gfap", "Glast", "Aldh1l1")
+micro_markers       <- c("Iba1", "Tlr2", "Tlr7", "CD86")
+neuron_markers      <- c("Snap25", "Tubb3", "Calb1", "Syt1")
+oligo_markers       <- c("Cnp1", "Sox10", "Mbp", "Mag", "Mog", "Plp1")
+
 all_df <- read_tsv("../data/augmented_data/table_2_log.tsv", show_col_types = FALSE)
 
 #Selecting only the rows corresponding to marker genes.
