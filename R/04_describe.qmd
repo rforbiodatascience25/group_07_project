@@ -203,3 +203,5 @@ This data frame currently has a lot of columns which describe the intensity of R
 We're specially interested in the columns that describe the intensity of proteins. For this, the columns from 14 to 23 contain the right data.
 
 For the PCA, the only needed data is the brain region and the intensity of signal, so the genes, protein names and everything can be dropped for the analysis.
+
+As mentioned earlier, these columns contain next to 0 NA values, so we don't have to drop them.

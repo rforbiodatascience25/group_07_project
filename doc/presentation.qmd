@@ -273,8 +273,6 @@ combined
 
 ## Principal Component Analysis
 
-`pcaMethods`
-
 ```{r}
 #| warning: false
 
