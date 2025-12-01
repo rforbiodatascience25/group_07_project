@@ -12,17 +12,17 @@ The `clean_2` data frame contains log₂ LFQ protein intensities measured in fou
 
 Because the LFQ intensities in this dataset are already provided in **log₂ scale**, they can be directly compared between samples without further transformation. To focus the analysis on cell-type–specific protein expression, we keep only the first six columns of the dataset, which correspond to:
 
--    *Gene name*
+-   *Gene name*
 
--    *Protein name*
+-   *Protein name*
 
--    *Isolated Astrocytes*
+-   *Isolated Astrocytes*
 
 -   *Isolated Microglia*
 
--    *Isolated Neurons*
+-   *Isolated Neurons*
 
--    *Isolated Oligodendrocytes*
+-   *Isolated Oligodendrocytes*
 
 To evaluate enrichment of each protein in a given cell type, we compute a **reference abundance** using the median log₂ LFQ intensity across all major brain samples. This provides a biologically meaningful baseline that reflects the “whole brain” proteome against which each isolated cell type can be compared. Using this reference, we calculate the **log₂ fold change** for each protein and each cell type:
 
@@ -39,11 +39,7 @@ clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FA
 head(clean_5)
 ```
 
-<<<<<<< HEAD
 The `clean_5` data frame contains protein expression data of cultured cell types per individual replicate. As in `clean_2` , the data is expressed in log LFQ intensity, allowing us to both validate our replicates, and to determine the preferential expression of each cultured cell type.
-=======
-The clean_5 data frame contains protein expression data of cultured cell types per individual replicate. This relative measure allows us to both validate our replicates, and to determine the preferential expression of each cultured cell type.
->>>>>>> 03117c2068838845d8adbd572e422c5c42872cf6
 
 For these goals, we are interested only in columns 1-26, while we can discard information about sequence coverage, molecular weight, and protein IDs.
 
