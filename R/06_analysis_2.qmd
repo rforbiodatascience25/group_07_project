@@ -1,0 +1,77 @@
+---
+title: "Figure2a"
+format: html
+editor: visual
+---
+
+## Libraries
+
+```{r}
+#| echo: false
+library(tidyverse)
+library(ggplot2)
+library(hrbrthemes)
+
+source("../R/99_proj_func.R")
+```
+
+## Data loading
+
+```{r}
+#| echo: false
+clean_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_col_types = FALSE)
+clean_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE)
+```
+
+## Proteomics data
+
+```{r}
+clean_5 <- clean_5 |> 
+  select(c(3:26)) |>
+  mutate(across(everything(), as.numeric)) |>
+  rename_with(~ str_remove(.x, "adult_"))
+```
+
+```{r}
+corr_mat_p <- cor(clean_5, use = "pairwise.complete.obs", method = "pearson")
+corr_long_p <- cluster_cor_mat(corr_mat_p)
+```
+
+```{r}
+corr_long_p |>
+  ggplot(aes(rep1, rep2, fill= correlation)) + 
+    ggtitle('Proteomics data') +
+    geom_tile(aes(fill = correlation), colour = "black") +
+    scale_fill_gradientn(colors = c('blue', 'white', 'red')) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+          axis.title = element_blank(),
+          plot.title = element_text(face = "bold", hjust = 0.5)) 
+```
+
+## Transriptomics data
+
+```{r}
+clean_3 <- clean_3 |> 
+  select(c(1:21)) |>
+  mutate(across(everything(), as.numeric)) |>
+  rename_with(~ .x |>
+                str_replace("rpkm_", "") |>
+                str_remove("adult_") |>
+                str_remove("cortical_"))
+```
+
+```{r}
+corr_mat_t <- cor(clean_3, use = "pairwise.complete.obs", method = "pearson")
+corr_long_t <- cluster_cor_mat(corr_mat_t)
+```
+
+```{r}
+corr_long_t |>
+  ggplot(aes(rep1, rep2, fill= correlation)) + 
+    ggtitle('Transcriptomics data') +
+    geom_tile(aes(fill = correlation), colour = "black") +
+    scale_fill_gradientn(colors = c('blue', 'white', 'red')) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+          axis.title = element_blank(),
+          plot.title = element_text(face = "bold", hjust = 0.5)) 
+```

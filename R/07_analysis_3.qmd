@@ -22,16 +22,14 @@ library("ggplot2")
 ```
 
 ```{r}
-# clean_3 <- read_tsv(file = "../data/clean_data/clean_3.tsv", show_col_types = FALSE)
-# #View(clean_3)
-# clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
-# clean_5_separate_gene_names <- read_tsv(file = "../data/clean_data/clean_5_separate_gene_names.tsv", show_col_types = FALSE)
 ```
 
 ```{r}
-aug_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_col_types = FALSE)
+aug_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_col_types = FALSE) |> 
+  select(rna_oligo_div1:rna_neuron_div10, gene_name)
 
-aug_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE)
+aug_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE) |> 
+  select(gene_name, protein_names, prot_microglia:prot_oligo_div4) 
 
 ```
 
@@ -39,7 +37,7 @@ aug_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_co
 
 ### Proteome data
 
-The values in the plot are log2 transformed so that's the transformation we are going to apply to proteome and transcriptome
+The values in the plot are log2 transformed so that's the transformation we are going to apply to proteome and transcriptome.
 
 Also we can see that the on the X and Y axis there are cell types. In the table there are 3 measurements for each cell type (adult_microglia_1, adult_microglia_2, adult_microglia_3). To get one value to compare cell types we will take the mean. That way we can get a more reliable estimate for each cell type by getting rid of experimental bias in each measurement and random noise.
 
@@ -222,13 +220,14 @@ ggplot(corr_df, aes(x = transcriptome, y = proteome, fill = corr)) +
   geom_tile() + #draws one rectangle per row
   geom_text(aes(label = sprintf("%.2f", corr)), size = 3) +
   scale_fill_gradient2(low = "steelblue", mid = "white", high = "darkred",
-                       midpoint = 0.35) +
+                       midpoint = 0.30) +
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
     panel.grid = element_blank() #no grid lines inside the panel
   ) +
   labs(
+    title = "Correlation Between Transcriptome and Proteome",
     x = "Transcriptome (log2 RPKM)",
     y = "Proteome (log2 LFQ)",
     fill = "Pearson correlation"

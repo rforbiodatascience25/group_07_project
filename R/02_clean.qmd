@@ -22,7 +22,7 @@ source("../R/99_proj_func.R")
 
 -   Skip over the first and/or second lines of the excel files. (This is done on `data_loading.qmd` to have the appropiate data structure from the start).
 
--   Drop NAs (Check with the NA_check function)
+-   Drop NAs (Check with the NA_check function if it's necessary or harmful for the data)
 
 # Cleaning table 2
 
@@ -134,7 +134,7 @@ dirty_5 <- read_tsv(file = "../data/dirty_data/supp_5.tsv")
 #Dropping duplicate gene_names (keeping the first one)
 
 clean_5 <- dirty_5 |> 
-  select(-contains("young"), -PEP, - `Mol. weight [kDa]`, -`Protein IDs`, -`Majority protein IDs`) |> 
+  select(-contains("young"), -PEP, - `Mol. weight [kDa]`, -`Protein IDs`, -`Majority protein IDs`, -`Sequence coverage [%]`) |> 
   clean_names() |> 
   distinct(gene_names, .keep_all = T) 
 
@@ -142,12 +142,6 @@ NA_check(clean_5) #0.32% of the values are NAs. So dropping NAs won't affect our
 
 clean_5 <- clean_5 |> 
   drop_na()
-
-#This table is with the separated gene names on each column. 
-#"Tidy data" but would mess up our numeric operations. Just in case we need it. 
-clean_5_separate_gene_names <- clean_5 |> 
-  separate_longer_delim(cols = gene_names, delim = ";")
-
 
 ```
 
@@ -177,8 +171,6 @@ Table 2 was separated in different ones to make data analysis easier, as not all
 #Create directory in case it doesn't exist already 
 dir.create("../data/clean_data", recursive = TRUE, showWarnings = FALSE)
 
-write_tsv(clean_1, "../data/clean_data/clean_1.tsv")
-
 write_tsv(clean_2, "../data/clean_data/clean_2.tsv")
 
 write_tsv(clean_2_brain_regions, "../data/clean_data/clean_2_brain_regions.tsv")
@@ -191,8 +183,6 @@ write_tsv(clean_2_isolated_cells, "../data/clean_data/clean_2_isolated_cells.tsv
 write_tsv(clean_3, "../data/clean_data/clean_3.tsv")
 
 write_tsv(clean_5, "../data/clean_data/clean_5.tsv")
-
-write_tsv(clean_5_separate_gene_names, "../data/clean_data/clean_5_separate_gene_names.tsv")
 
 write_tsv(clean_17, "../data/clean_data/clean_17.tsv")
 ```

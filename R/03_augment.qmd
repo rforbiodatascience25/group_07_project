@@ -1,5 +1,5 @@
 ---
-title: "data_augment"
+title: "03_augment"
 format: html
 editor: visual
 ---
@@ -16,7 +16,7 @@ source("../R/99_proj_func.R")
 dir.create("../data/augmented_data", recursive = TRUE, showWarnings = FALSE)
 ```
 
-## Table 2 - Maria
+## Table 2
 
 ```{r}
 clean_2 <- read_tsv(file = "../data/clean_data/clean_2.tsv", show_col_types = FALSE)
@@ -80,15 +80,10 @@ write_tsv(all_df, "../data/augmented_data/table_2_log.tsv")
 
 ```
 
-## Table 3 - Louise
-
-## Table 3+5 - Renata
-
-### Table 3
+## Table 3
 
 ```{r}
 clean_3 <- read_tsv(file = "../data/clean_data/clean_3.tsv", show_col_types = FALSE)
-#View(clean_3)
 
 ```
 
@@ -107,19 +102,16 @@ rna_prefixes <- c(
 ```{r}
 aug_3 <- clean_3 |>
   mutate(across(starts_with("rpkm_"), log2p1)) |>  # log2(x+1) on all rpkm columns
-  mean_across_col(rna_prefixes) |>                 # calculate means per cell type
-  select(rna_oligo_div1:rna_neuron_div10, gene_name)
+  mean_across_col(rna_prefixes) #|>                 # calculate means per cell type
+  # select(rna_oligo_div1:rna_neuron_div10, gene_name)
 
-#aug_3 
 ```
 
 ```{r}
-# writing a table to augmented data folder data/data_augmented in tsv format
-
 write_tsv(aug_3, "../data/augmented_data/table_3_log_means.tsv")
 ```
 
-### Table 5
+## Table 5
 
 ```{r}
 clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
@@ -142,14 +134,11 @@ prot_prefixes <- c(
 aug_5 <- clean_5 |> 
   mutate(across(adult_microglia_1:oligodendrocytes_div4_3, log2p1)) |> # applying log2
   mean_across_col(prot_prefixes) |> #df is provided by pipe
-  mutate(gene_name = gene_names) |> #renaming the column for future merging with rna df
-  select(gene_name, protein_names, prot_microglia:prot_oligo_div4) #saving only new cols and names 
-  
-aug_5
+  mutate(gene_name = gene_names) #|> #renaming the column for future merging with rna df
+  # select(gene_name, protein_names, prot_microglia:prot_oligo_div4) #saving only new cols and names 
+
 ```
 
 ```{r}
-# writing a table to augmented data folder data/data_augmented in tsv format
-
 write_tsv(aug_5, "../data/augmented_data/table_5_log_means.tsv")
 ```

@@ -217,3 +217,5 @@ PCA_plot
 -   The transcriptome–proteome comparisons show that mRNA alone cannot capture this tuning, while the PCA across regions reveals that even at a global scale, protein expression maps neatly onto brain anatomy
 
 -   Our marker and enrichment plots then zoom in to show how relatively few but strongly enriched proteins at the cell surface and synapse give astrocytes, neurons, microglia and oligodendrocytes their distinct molecular fingerprints and interactions
+
+See how different the cell types' expressions is
