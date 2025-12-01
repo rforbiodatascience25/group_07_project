@@ -32,6 +32,15 @@ Marianna
 # Results
 
 ## Transcriptome density analysis
+<<<<<<< HEAD
+
+```{r}
+knitr::include_graphics("../results/RNA_density_plot_celltype.png")
+
+knitr::include_graphics("../results/RNA_density_plot_combined.png")
+```
+=======
+>>>>>>> 4aaa8ba7eafe8c5b1ca55ef2f078623ece96d8a3
 
 ## Marianna
 
