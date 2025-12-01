@@ -9,7 +9,7 @@ library(ggrepel)
 library(patchwork)
 
 #Sourcing function to draw panels
-source("99_draw_panel.R")
+source("99_proj_func.R")
 
 all_df <- read_tsv("../data/augmented_data/table_2_log.tsv", show_col_types = FALSE)
 
