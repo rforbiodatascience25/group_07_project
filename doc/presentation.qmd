@@ -24,7 +24,15 @@ source("../R/99_proj_func.R")
 
 # Introduction
 
-Marianna
+-   **Goal**
+
+    -   Can we reliably predict protein abundance from transcript expression levels, or vice versa?
+
+-   **Data**
+
+    -   Cultured cell types from mice brain
+
+    -   Proteomics and transcriptomics data
 
 ## 
 
@@ -40,7 +48,7 @@ Marianna
 
 ![](images/clipboard-3719894856.png)
 
-## Marianna
+## Data validation: replicates correlation
 
 ![](images/Screenshot%202025-12-01%20at%2019.58.33.png)
 
@@ -187,6 +195,10 @@ combined <- p_astro + p_micro + p_neuron + p_oligo +
 combined
 ```
 
+## Rank-Rank analysis across data types
+
+![](images/Screenshot%202025-12-01%20at%2020.32.47.png){width="450"}
+
 ## Principal Component Analysis
 
 ```{r}
@@ -240,10 +252,6 @@ PCA_plot <- pcaData |>
 ```{r}
 PCA_plot
 ```
-
-## Rank-Rank analysis across data types
-
-![](images/Screenshot%202025-12-01%20at%2020.32.47.png){width="506"}
 
 ## Conclusion
 
