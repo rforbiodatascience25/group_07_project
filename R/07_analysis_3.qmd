@@ -25,7 +25,7 @@ aug_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv",
 
 ## Merging the tables
 
-First of all we need to merge two datasets on gene_name
+First of all we need to merge two datasets on gene_name.
 
 In the initial table we had multiple gene names in one cell. Mass spectrometry measures short peptides and proteins can have the same peptide sequences. So we cannot say for sure which protein and which gene the peptide came from that's why we list multiple genes. Also in the gene name column there can be different name notations.
 
@@ -48,7 +48,7 @@ prot_one_gene <- aug_5 |>
 
 ```{r}
 prot_rna_merged <- inner_join(prot_one_gene, aug_3, by = "gene_name")
-prot_rna_merged # joined table with duplicates in protein names and it's okay, no correlation in data
+head(prot_rna_merged) # joined table with duplicates in protein names and it's okay, no correlation in data
 ```
 
 ## Calculation of correlation
