@@ -25,7 +25,7 @@ source("../R/99_proj_func.R")
 
 Marianna
 
-##  
+##  Idk
 
 ![](images/clipboard-1107948132.png){width="3600"}
 
