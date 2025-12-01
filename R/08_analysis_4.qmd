@@ -17,8 +17,7 @@ clean_cells <- clean_2 |>
     astro   = 3,
     micro   = 4,
     neuron  = 5,
-    oligo   = 6,
-    brain   = 7  
+    oligo   = 6
   ) |>
   slice(-(1:2))      
 
@@ -28,107 +27,74 @@ clean_cells <- clean_cells |>
     astro  = as.numeric(astro),
     micro  = as.numeric(micro),
     neuron = as.numeric(neuron),
-    oligo  = as.numeric(oligo),
-    brain  = as.numeric(brain)
+    oligo  = as.numeric(oligo)
   )
 
 
-
-myelin_genes <- c("Mbp", "Plp1", "Cnp", "Mag", "Mog") |>
+astrocyte_markers <-c("Aqp4", "Gfap", "Glast", "Aldh1l1") |>
   toupper()
 
-cytoskeleton_genes <- c("Tuba1b", "Actb", "Sptan1", "Map1a", "Map2",
-                        "Tubb3", "Nefm", "Nefl", "Map6", "Acta2") |>
+oligodendrocyte_markers <- c("Cnp1", "Sox10", "Mbp", "Mag", "Mog", "Plp1") |>
   toupper()
 
-synapse_genes <- c("Syn1", "Dnm1", "Camk2a", "Camk2b", "Syt1",
-                   "Snap25", "Bsn", "Stx1b", "Syn2", "Snap91") |>
+neuron_markers <-c("Snap25", "Tubb3", "Calb1", "Syt1") |>
+  toupper()
+
+microglia_markers <-c("Iba1", "Tlr2", "Tlr7", "CD86") |>
   toupper()
 
 
+
+```
+
+### Trying with the median
+
+```{r}
 panel_df <- clean_cells |>
   mutate(
-    gene_up = gene |>
-      toupper() |>
-      str_trim(),
+    gene_up = gene |> toupper() |> str_trim(),
 
-    # log2 fold expression vs whole brain
-    logFC_astro  = log2(astro  / brain),
-    logFC_micro  = log2(micro  / brain),
-    logFC_neuron = log2(neuron / brain),
-    logFC_oligo  = log2(oligo  / brain),
-
-    # LFQ values are already log2 in the dataset
     logLFQ_astro  = astro,
     logLFQ_micro  = micro,
     logLFQ_neuron = neuron,
     logLFQ_oligo  = oligo
-  )
-
-
-astro_df <- panel_df |>
-  select(gene, gene_up, protein, logFC = logFC_astro,
-         logLFQ = logLFQ_astro) |>
-  mutate(type = "Astrocytes")
-
-micro_df <- panel_df |>
-  select(gene, gene_up, protein, logFC = logFC_micro,
-         logLFQ = logLFQ_micro) |>
-  mutate(type = "Microglia")
-
-neuron_df <- panel_df |>
-  select(gene, gene_up, protein, logFC = logFC_neuron,
-         logLFQ = logLFQ_neuron) |>
-  mutate(type = "Neurons")
-
-oligo_df <- panel_df |>
-  select(gene, gene_up, protein, logFC = logFC_oligo,
-         logLFQ = logLFQ_oligo) |>
-  mutate(type = "Oligodendrocytes")
-
-all_df <- bind_rows(astro_df, micro_df, neuron_df, oligo_df)
-
-
-all_df <- all_df |>
+  ) |>
+  rowwise() |>
   mutate(
-    category = case_when(
-      gene_up %in% myelin_genes       ~ "Myelin",
-      gene_up %in% cytoskeleton_genes ~ "Cytoskeleton",
-      gene_up %in% synapse_genes      ~ "Synapse",
-      TRUE                             ~ "Other"
-    )
-  )
-
-
-all_df <- all_df |>
-  filter(is.finite(logFC),
-         is.finite(logLFQ))
-
-
-labels_df <- all_df |>
-  group_by(type) |>
-  mutate(score = logLFQ * abs(logFC)) |>
-  arrange(desc(score)) |>
-  slice_head(n = 12) |>
+    logLFQ_median = median(c_across(starts_with("logLFQ_")), na.rm = TRUE),
+    logFC_astro   = logLFQ_astro  - logLFQ_median,
+    logFC_micro   = logLFQ_micro  - logLFQ_median,
+    logFC_neuron  = logLFQ_neuron - logLFQ_median,
+    logFC_oligo   = logLFQ_oligo  - logLFQ_median
+  ) |>
   ungroup()
 
+```
 
-cols <- c(
-  "Myelin"       = "#D7191C",
-  "Cytoskeleton" = "#2B83BA",
-  "Synapse"      = "#1A9850",
-  "Other"        = "grey70"
-)
+```{}
+```
 
-base_theme <- theme_minimal(base_size = 13) +
-  theme(
-    panel.grid.minor = element_blank(),
-    panel.grid.major = element_line(color = "grey90"),
-    strip.text       = element_text(size = 14, face = "bold"),
-    plot.title       = element_text(size = 16, face = "bold"),
-    axis.title       = element_text(size = 12)
-  )
+### Plotting
 
+```{r}
+# Split dataset by cell type for plotting
+astro_plot_df  <- all_df |> filter(type == "Astrocytes")
+micro_plot_df  <- all_df |> filter(type == "Microglia")
+neuron_plot_df <- all_df |> filter(type == "Neurons")
+oligo_plot_df  <- all_df |> filter(type == "Oligodendrocytes")
+
+# Select only marker genes for labelling in each panel
+astro_labels <- astro_plot_df |>
+  filter(gene_up %in% astrocyte_markers)
+
+micro_labels <- micro_plot_df |>
+  filter(gene_up %in% microglia_markers)
+
+neuron_labels <- neuron_plot_df |>
+  filter(gene_up %in% neuron_markers)
+
+oligo_labels <- oligo_plot_df |>
+  filter(gene_up %in% oligodendrocyte_markers)
 
 draw_panel <- function(df_sub,
                        df_labels,
@@ -137,6 +103,8 @@ draw_panel <- function(df_sub,
   ggplot(df_sub,
          aes(x = logFC,
              y = logLFQ)) +
+
+    # Add reference lines (median LFQ and zero FC)
     geom_hline(yintercept = median(df_sub$logLFQ, na.rm = TRUE),
                linetype   = "dashed",
                color      = "grey85",
@@ -145,24 +113,34 @@ draw_panel <- function(df_sub,
                linetype   = "dashed",
                color      = "grey85",
                size       = 0.3) +
+
+    # Scatter points colored by marker category
     geom_point(aes(color = category),
                alpha = 0.55,
                size  = 1.4) +
+
     scale_color_manual(values = cols) +
-    geom_text_repel(data        = df_labels,
-                    aes(label   = gene),
-                    size         = 3.0,
-                    max.overlaps = 20,
-                    box.padding  = 0.3,
-                    segment.size = 0.25,
-                    segment.alpha= 0.6) +
+
+    # Label ONLY the cell-type-specific marker genes for this panel
+    geom_text_repel(
+      data          = df_labels,
+      aes(label     = gene),
+      size          = 3.0,
+      max.overlaps  = Inf,
+      box.padding   = 0.3,
+      segment.size  = 0.25,
+      segment.alpha = 0.6
+    ) +
+
     labs(
       title = panel_title,
-      x     = "log2 fold expression (cell type vs Brain)",
+      x     = "log2 fold expression (cell type vs median)",
       y     = "log2 LFQ intensity"
     ) +
+
     base_theme
 }
+
 
 astro_plot_df  <- all_df |> filter(type == "Astrocytes")
 astro_labels   <- labels_df |> filter(type == "Astrocytes")
@@ -186,11 +164,11 @@ combined <- p_astro +
   p_micro +
   p_neuron +
   p_oligo +
-  plot_layout(nrow = 1, guides = "collect") &
+  plot_layout(nrow = 2, guides = "collect") &
   theme(legend.position = "bottom")
 
 ggsave(
-  filename = "../results/Figure4_4.jpg",
+  filename = "../results/Figure4_median_improved_2row.jpg",
   plot     = combined,
   width    = 18,
   height   = 5,
@@ -198,6 +176,4 @@ ggsave(
 )
 
 combined
-
-
 ```

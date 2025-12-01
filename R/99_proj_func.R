@@ -129,5 +129,11 @@ plot_rank_rank_comparison <- function(
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5))
   
+  ggsave(filename = paste0(cell_type_name, ".jpg"),
+    plot = p, 
+    path = '../results/',
+    width = 8,
+    height = 6)
+  
   return(p)
 }

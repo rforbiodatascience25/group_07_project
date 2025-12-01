@@ -47,13 +47,10 @@ sampletext
 
 sampletext
 
-## Renata
-
-#### Correlation Heatmap
+## Correlation Heatmap
 
 ![](images/Heatmap_tr_prt.jpg)
 
-## Renata
 
 ```{r}
 prot_one_gene <- aug_5 |> 

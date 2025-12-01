@@ -54,31 +54,32 @@ clean_2 <- clean_2 |>
     logLFQ_oligo  = as.numeric(logLFQ_oligo)
   )
 
+write_tsv(clean_2, path = "../data/clean_data/clean_2.tsv")
 
 ```
 
 ```{r}
-#| echo: false
-
-dirty_2 <-read_tsv(file = "../data/dirty_data/supp_2.tsv")
-
-#Want to remove all SD columns (from column nr 21-38), but keep all else
-clean_2 <- dirty_2 |> 
-  select(1:20, 39:40, 42:43)
-
-#3 remaining column headers; Isolated cells, Brain regions, cerebellum development
-
-#Isolated cells table
-clean_2_isolated_cells <- clean_2 |> 
-  select(1:6, 21:24)
-
-#Brain region table
-clean_2_brain_regions <- clean_2 |> 
-  select(1:2, 7:17, 21:24)
-  
-#Cerebellum dev table
-clean_2_cerebellum_development <- clean_2 |>
-  select(1:2, 18:20, 21:24)
+# #| echo: false
+# 
+# dirty_2 <-read_tsv(file = "../data/dirty_data/supp_2.tsv")
+# 
+# #Want to remove all SD columns (from column nr 21-38), but keep all else
+# clean_2 <- dirty_2 |> 
+#   select(1:20, 39:40, 42:43)
+# 
+# #3 remaining column headers; Isolated cells, Brain regions, cerebellum development
+# 
+# #Isolated cells table
+# clean_2_isolated_cells <- clean_2 |> 
+#   select(1:6, 21:24)
+# 
+# #Brain region table
+# clean_2_brain_regions <- clean_2 |> 
+#   select(1:2, 7:17, 21:24)
+#   
+# #Cerebellum dev table
+# clean_2_cerebellum_development <- clean_2 |>
+#   select(1:2, 18:20, 21:24)
 ```
 
 # Cleaning table 3
@@ -165,20 +166,11 @@ NA_check(clean_17 |>
 
 # Writing clean data to tables
 
-Table 2 was separated in different ones to make data analysis easier, as not all data is necessary for all further plotting.
-
 ```{r}
 #Create directory in case it doesn't exist already 
 dir.create("../data/clean_data", recursive = TRUE, showWarnings = FALSE)
 
 write_tsv(clean_2, "../data/clean_data/clean_2.tsv")
-
-write_tsv(clean_2_brain_regions, "../data/clean_data/clean_2_brain_regions.tsv")
-
-write_tsv(clean_2_cerebellum_development, "../data/clean_data/
-          clean_2_cerebellum_development.tsv")
-
-write_tsv(clean_2_isolated_cells, "../data/clean_data/clean_2_isolated_cells.tsv")
 
 write_tsv(clean_3, "../data/clean_data/clean_3.tsv")
 
