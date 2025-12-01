@@ -119,13 +119,13 @@ rna_grouped <- rna_long |>
 ```{r}
 #Checking if genes appear several times within the dataset
 #(how many rows within the rna_grouped dataset have the combination of cell + gene)
-count_per_gene <- rna_grouped %>% 
-  count(cell_group, gene_name) %>% 
+count_per_gene <- rna_grouped |> 
+  count(cell_group, gene_name) |>
   filter(n > 1)
 
 #Display as range:
-count_per_gene_summary <- count_per_gene %>% 
-  group_by(cell_group) %>% 
+count_per_gene_summary <- count_per_gene |>
+  group_by(cell_group) |> 
   summarise(
     min_n = min(n),
     max_n = max(n),
@@ -133,10 +133,10 @@ count_per_gene_summary <- count_per_gene %>%
   )
   
 #Extracting to a printable format
-count_per_gene_summary %>% 
-  rowwise() %>% 
-  mutate(msg = paste0(cell_group, ": Counts per gene ranges from ", min_n, " to ", max_n)) %>% 
-  pull(msg) %>% 
+count_per_gene_summary |>
+  rowwise() |>
+  mutate(msg = paste0(cell_group, ": Counts per gene ranges from ", min_n, " to ", max_n)) |> 
+  pull(msg) |> 
   cat(sep = "\n")
 ```
 
