@@ -25,26 +25,21 @@ source("../R/99_proj_func.R")
 
 Marianna
 
-# Materials & Methods
+## 
 
-![](images/clipboard-1107948132.png){width="2993"}
+![](images/clipboard-1107948132.png){width="3600"}
 
 # Results
 
 ## Transcriptome density analysis
-<<<<<<< HEAD
 
-```{r}
-knitr::include_graphics("../results/RNA_density_plot_celltype.png")
+-   This shows blablabla
 
-knitr::include_graphics("../results/RNA_density_plot_combined.png")
-```
-=======
->>>>>>> 4aaa8ba7eafe8c5b1ca55ef2f078623ece96d8a3
+![](images/clipboard-1185996237.png)
 
 ## Marianna
 
-![](images/Screenshot 2025-12-01 at 19.58.33.png)
+![](images/Screenshot%202025-12-01%20at%2019.58.33.png)
 
 ## Correlation Heatmap
 
@@ -243,10 +238,20 @@ PCA_plot <- pcaData |>
 PCA_plot
 ```
 
-# Conclusion
+## Rank-Rank analysis across data types
 
--   **Transcriptomics != Proteomics**
+![](images/Screenshot%202025-12-01%20at%2020.32.47.png){width="506"}
 
--   **Proteomic diversity across brain regions**
+## Conclusion
+
+-   **Transcriptomics ≠ Proteomics**
+
+    -   Most abundant transcripts and the most abundant proteins often do not correlate
+
+-   **Proteomics provides valuable insights**
+
+    -   Different proteomic profiles depending on cell type / brain region
 
 -   **Why is this important?**
+
+    -   mRNA results don't translate into real world proteomic profiles

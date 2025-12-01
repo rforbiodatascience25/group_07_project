@@ -103,5 +103,5 @@ PCA_plot
 ## Save plot
 
 ```{r}
-ggsave(filename = "PCA_Plot.jpg", plot = PCA_plot, path = "../results")
+ggsave(filename = "PCA_Plot_brain_regions.jpg", plot = PCA_plot, path = "../results")
 ```
