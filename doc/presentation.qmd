@@ -41,11 +41,8 @@ knitr::include_graphics("../results/RNA_density_plot_combined.png")
 
 ## Marianna
 
-<<<<<<< HEAD
 ![](images/Screenshot%202025-12-01%20at%2019.58.33.png)
-=======
-![](images/Screenshot%202025-12-01%20at%2019.58.33.png){width="4000"}
->>>>>>> 2e67846a5c80b1dc55bbe219677a2afc6bf04cdb
+
 
 ## Correlation Heatmap
 
