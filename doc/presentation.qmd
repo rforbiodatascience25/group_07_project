@@ -53,7 +53,75 @@ sampletext
 
 ![](images/Heatmap_tr_prt.jpg)
 
+## Renata
+
 ```{r}
+prot_one_gene <- aug_5 |> 
+  mutate(gene_name = str_split(gene_name, ";") |> map_chr(1))
+
+prot_rna_merged <- inner_join(prot_one_gene, aug_3, by = "gene_name")
+
+mat <- prot_rna_merged |>
+  select(starts_with("prot_"), starts_with("rna_"))
+
+prot_mat <- mat |> 
+  select(starts_with("prot_")) |>
+  as.matrix()
+
+rna_mat  <- mat |>
+  select(starts_with("rna_"))  |>
+  as.matrix()
+
+corr_mat <- cor(prot_mat, rna_mat, use = "pairwise.complete.obs")
+
+corr_df <- corr_mat |> 
+  as_tibble(rownames = "proteome") |> #then we produce the long format
+  pivot_longer(-proteome,
+               names_to = "transcriptome",
+               values_to = "corr")
+
+
+corr_df <- corr_df |>
+  mutate( # we will use recode because it will preserve the existing order of levels while changing the values
+    proteome = recode(proteome,
+      prot_microglia    = "Microglia",
+      prot_astro        = "Astrocytes",
+      prot_oligo_div1   = "Oligo_DIV1",
+      prot_oligo_div2_5 = "Oligo_DIV2.5",
+      prot_oligo_div4   = "Oligo_DIV4",
+      prot_neuron_div5  = "Neuron_DIV5",
+      prot_neuron_div10 = "Neuron_DIV10"
+    ),
+    transcriptome = recode(transcriptome,
+      rna_microglia    = "Microglia",
+      rna_astro        = "Astrocytes",
+      rna_oligo_div1   = "Oligo_DIV1",
+      rna_oligo_div2_5 = "Oligo_DIV2.5",
+      rna_oligo_div4   = "Oligo_DIV4",
+      rna_neuron_div5  = "Neuron_DIV5",
+      rna_neuron_div10 = "Neuron_DIV10"
+    )
+  )
+
+
+heatmap_tr_prt <- ggplot(corr_df, aes(x = transcriptome, y = proteome, fill = corr)) +
+  geom_tile() +
+  geom_text(aes(label = sprintf("%.2f", corr)), size = 3) +
+  scale_fill_gradient2(low = "steelblue", mid = "white", high = "darkred",
+                       midpoint = 0.30) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  ) +
+  labs(
+    title = "Correlation Between Transcriptome and Proteome",
+    x = "Transcriptome (log2 RPKM)",
+    y = "Proteome (log2 LFQ)",
+    fill = "Pearson correlation"
+  )
+
+heatmap_tr_prt
 
 ```
 
