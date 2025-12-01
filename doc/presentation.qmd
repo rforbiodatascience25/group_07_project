@@ -32,64 +32,19 @@ Marianna
 # Results
 
 ## Transcriptome density analysis
+<<<<<<< HEAD
 
 ```{r}
 knitr::include_graphics("../results/RNA_density_plot_celltype.png")
 
 knitr::include_graphics("../results/RNA_density_plot_combined.png")
 ```
+=======
+>>>>>>> 4aaa8ba7eafe8c5b1ca55ef2f078623ece96d8a3
 
 ## Marianna
 
-```{r}
-clean_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_col_types = FALSE)
-clean_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE)
-
-clean_5 <- clean_5 |> 
-  select(c(3:26)) |>
-  mutate(across(everything(), as.numeric)) |>
-  rename_with(~ str_remove(.x, "adult_"))
-corr_mat_p <- cor(clean_5, use = "pairwise.complete.obs", method = "pearson")
-corr_long_p <- cluster_cor_mat(corr_mat_p)
-
-p_prot <- corr_long_p |>
-  ggplot(aes(rep1, rep2, fill= correlation)) + 
-    ggtitle('Proteomics data') +
-    geom_tile(aes(fill = correlation), colour = "black") +
-    scale_fill_gradientn(colors = c('blue', 'white', 'red')) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-          axis.title = element_blank(),
-          plot.title = element_text(face = "bold", hjust = 0.5))
-
-clean_3 <- clean_3 |> 
-  select(c(2:22)) |>
-  mutate(across(everything(), as.numeric)) |>
-  rename_with(~ .x |>
-                str_replace("rpkm_", "") |>
-                str_remove("adult_") |>
-                str_remove("cortical_"))
-corr_mat_t <- cor(clean_3, use = "pairwise.complete.obs", method = "pearson")
-corr_long_t <- cluster_cor_mat(corr_mat_t)
-
-p_trans <- corr_long_t |>
-  ggplot(aes(rep1, rep2, fill= correlation)) + 
-    ggtitle('Transcriptomics data') +
-    geom_tile(aes(fill = correlation), colour = "black") +
-    scale_fill_gradientn(colors = c('blue', 'white', 'red')) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-          axis.title = element_blank(),
-          plot.title = element_text(face = "bold", hjust = 0.5)) 
-```
-
-::::: columns
-::: {.column width="50%"}
-p_prot
-:::
-
-::: {.column width="50%"}
-p_trans
-:::
-:::::
+![](images/Screenshot 2025-12-01 at 19.58.33.png)
 
 ## Correlation Heatmap
 
