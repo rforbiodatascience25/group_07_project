@@ -22,8 +22,13 @@ The clean_5 data frame contains protein expression data of cultured cell types p
 For these goals, we are interested only in columns 1-26, while we can discard information about sequence coverage, molecular weight, and protein IDs.
 
 ```{r}
-view(clean_5)
+# view(clean_5)
+
+dim(clean_5)
+colnames(clean_5)[1:26]
 ```
+
+The data has 9371 genes and 24 samples: 3 replicated for adult microglia, astrocytes, oligodendrocytes at 3 stages (div 1, 2.5, and 4), and neurons at 3 stages (div 5, 10, and 15).
 
 ```{r}
 zeros <- clean_5 |> 
@@ -31,9 +36,25 @@ zeros <- clean_5 |>
   summarise(across(everything(), function(x) mean(x == 0)))
 
 zeros
+
+zeros_long <- zeros |> 
+  pivot_longer(everything(), names_to = "sample", values_to = "zero_fraction")
+
+ggplot(zeros_long, aes(x = sample, y = zero_fraction)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Fraction of Zero Intensities per Sample",
+    y = "Proportion of zeros",
+    x = "Sample"
+  )
+
 ```
 
 ```{r}
+clean_5 <- clean_5 |>
+  select(c(1:26))
+
 stat_5 <- clean_5 |> 
   select(where(is.numeric)) |>    # choosing the numeric columns
   pivot_longer(everything(),
@@ -62,6 +83,19 @@ per_protein_stat <- clean_5 |>
   select(gene_names, protein_names, mean, sd)
 
 per_protein_stat
+
+ggplot(per_protein_stat, aes(x = mean)) +
+  geom_histogram(bins = 40) +
+  labs(
+    title = "Distribution of Protein Mean Intensities",
+    x = "Mean LFQ Intensity",
+    y = "Count"
+  )
+
+```
+
+```{r}
+table(sub("_[^_]+$", "", names(clean_5)[sapply(clean_5, is.numeric)]))
 ```
 
 # Data 17 - Angel
