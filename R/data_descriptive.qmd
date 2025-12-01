@@ -1,0 +1,81 @@
+---
+title: "data_descriptive"
+format: html
+editor: visual
+---
+
+The expression data used in this project was retrieved from Supplementary tables 1, 2, 3, 5, and 17 of [*(Sharma et. al, 2015)*](https://www.nature.com/articles/nn.4160#Sec12)*.* Tables 1, 2, 5, and 17 collect protein expression data normalized as log LFQ intensity, a metric used to compare the abundance of the **same protein** across multiple samples or conditions.
+
+# Data 2 - Maria
+
+# Data 3 - Louise
+
+# Data 5 - Renata & Marianna
+
+```{r}
+clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
+head(clean_5)
+```
+
+The clean_5 data frame contains protein expression data of cultured cell types per individual replicate. This relative measure allows us to both validate our replicates, and to determine the preferential expression of each cultured cell type.
+
+For these goals, we are interested only in columns 1-26, while we can discard information about sequence coverage, molecular weight, and protein IDs.
+
+```{r}
+view(clean_5)
+```
+
+```{r}
+zeros <- clean_5 |> 
+  select(where(is.numeric)) |> 
+  summarise(across(everything(), function(x) mean(x == 0)))
+
+stat_5
+```
+
+```{r}
+stat_5 <- clean_5 |> 
+  select(where(is.numeric)) |>    # choosing the numeric columns
+  pivot_longer(everything(),
+               names_to = "columns",
+               values_to = "value") |> 
+  group_by(columns) |> 
+  summarise(
+    count = n(),
+    mean = mean(value, na.rm = TRUE),
+    median = median(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE),
+    min = min(value, na.rm = TRUE),
+    max = max(value, na.rm = TRUE)
+  ) 
+
+stat_5
+```
+
+```{r}
+per_protein_stat <- clean_5 |> 
+  rowwise() |> 
+  mutate(
+    mean = mean(c_across(where(is.numeric)), na.rm = TRUE),
+    sd = sd(c_across(where(is.numeric)), na.rm = TRUE)
+  ) |> 
+  select(gene_names, protein_names, mean, sd)
+
+per_protein_stat
+```
+
+```{r}
+
+```
+
+# Data 17 - Angel
+
+```{r}
+head(clean_17)
+```
+
+This data frame currently has a lot of columns which describe the intensity of RNA signal and proteins in different regions of the mouse brain.
+
+We're specially interested in the columns that describe the intensity of proteins. For this, the columns from 14 to 23 contain the right data.
+
+For the PCA, the only needed data is the brain region and the intensity of signal, so the genes, protein names and everything can be dropped for the analysis.
