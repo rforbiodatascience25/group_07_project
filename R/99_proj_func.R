@@ -139,6 +139,11 @@ plot_rank_rank_comparison <- function(
 }
 
 
+## Function to plot the log2 fold expression for a given cell type
+
+# df_sub = data for that cell type 
+# df_labels = only the marker genes for labeling 
+# panel_title = title shown above the panel
 
 draw_panel <- function(df_sub, df_labels, panel_title) {
   
