@@ -1,0 +1,99 @@
+---
+title: "rank-rank"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+```
+
+```{r}
+#| echo: false
+clean_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_col_types = FALSE)
+clean_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE)
+
+```
+
+```{r}
+prot_clean <- clean_5 |> 
+  mutate(gene = str_split(gene_name, ";") |> map_chr(1)) |>
+  select(gene, starts_with("prot_")) |>
+  mutate(gene = as.character(gene)) |>
+  mutate(gene = make.names(gene, unique = TRUE)) |>
+  group_by(gene) |>
+  summarise(across(starts_with("prot"), ~mean(.x, na.rm = TRUE)), .groups = "drop")
+
+rna_clean <- clean_3 |> 
+  select(gene = gene_name, starts_with("rna_")) |>
+  mutate(gene = as.character(gene)) |>
+  mutate(gene = make.names(gene, unique = TRUE)) |>
+  group_by(gene) |>
+  summarise(across(starts_with("rna"), ~mean(.x, na.rm = TRUE)), .groups = "drop")
+
+aligned_data <- inner_join(prot_clean, rna_clean, by = "gene")
+
+rna_col <- "rna_astro"
+prot_col <- "prot_astro"
+eps <- 1e-6 # threshold for filtering low scores
+
+merged_ranked <- aligned_data |>
+  select(gene, all_of(rna_col), all_of(prot_col)) |>
+  rename(rna_score = all_of(rna_col),
+         prot_score = all_of(prot_col)) |>
+  
+  filter(!is.na(rna_score) & !is.na(prot_score)) |>
+  filter(abs(rna_score) > eps | abs(prot_score) > eps) |>
+  
+  distinct(gene, .keep_all = TRUE) |>
+
+  mutate(
+    rna_rank = rank(-rna_score, ties.method = "average"),
+    prot_rank = rank(-prot_score, ties.method = "average")
+  ) |>
+
+  arrange(gene)
+```
+
+```{r}
+library(ggplot2)
+library(ggrepel)
+
+
+astrocyte_markers       <- c("Aqp4", "Gfap", "Slc1a3", "Aldh1l1")
+oligodendrocyte_markers <- c("Cnp1", "Sox10", "Mbp", "Mag", "Mog", "Plp1")
+neuron_markers          <- c("Snap25", "Tubb3", "Calb1", "Syt1")
+microglia_markers       <- c("Aif1", "Tlr2", "Tlr7", "Cd86")
+```
+
+```{r}
+astro_plot_density <- plot_rank_rank_comparison(
+  marker_list = astrocyte_markers,
+  cell_type_name = "Astrocyte",
+  use_density = TRUE
+)
+print(astro_plot_density)
+
+oligo_plot_scatter <- plot_rank_rank_comparison(
+  marker_list = oligodendrocyte_markers,
+  cell_type_name = "Oligodendrocyte",
+  use_density = TRUE
+)
+print(oligo_plot_scatter)
+
+micro_plot_scatter <- plot_rank_rank_comparison(
+  marker_list = microglia_markers,
+  cell_type_name = "Microglia",
+  use_density = TRUE
+)
+print(micro_plot_scatter)
+
+neuron_plot_scatter <- plot_rank_rank_comparison(
+  marker_list = neuron_markers,
+  cell_type_name = "Neuron",
+  use_density = TRUE
+)
+print(neuron_plot_scatter)
+```

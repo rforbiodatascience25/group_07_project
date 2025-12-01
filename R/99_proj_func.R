@@ -80,3 +80,54 @@ cluster_cor_mat <- function(cor_mat) {
   
   return(cor_long)
 }
+
+
+## Function to plot rank-rank comparison with specific set of genes
+plot_rank_rank_comparison <- function(
+    marker_list,        # Vector of gene names to highlight
+    cell_type_name,     # String for the plot title (e.g., "Astrocyte")
+    use_density = FALSE,# Boolean: TRUE to use density contours, FALSE for scatter plot
+    plot_limit = 5000   # Maximum rank limit for both axes (removes top artifact)
+) {
+  
+  marker_data <- merged_ranked |>
+    filter(gene %in% marker_list)
+  
+  p <- merged_ranked |>
+    ggplot(aes(x = rna_rank, y = prot_rank)) +
+    
+    {if(use_density) {
+      list(
+        geom_point(alpha = 0.1, color = "black", size = 0.5),
+        geom_density_2d(color = "darkblue")
+      )
+    } else {
+      geom_point(alpha = 0.5, color = "black", size = 1)
+    }} +
+    
+    geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "red", linewidth = 1) +
+    
+    geom_point(data = marker_data, color = "red", size = 3) +
+    geom_text_repel(
+      data = marker_data, 
+      aes(label = gene),
+      color = "red",
+      size = 4, 
+      max.overlaps = Inf, 
+      segment.color = 'gray50'
+    ) +
+    
+    scale_x_continuous(limits = c(0, plot_limit), expand = c(0, 0)) +
+    scale_y_continuous(limits = c(0, plot_limit), expand = c(0, 0)) + 
+    coord_equal() + 
+    
+    labs(
+      title = paste("Rank-Rank Comparison:", cell_type_name, "RNA vs. Protein"),
+      x = "RNA Rank (Low Rank = High Expression)",
+      y = "Protein Rank (Low Rank = High Abundance)"
+    ) +
+    theme_minimal() +
+    theme(plot.title = element_text(hjust = 0.5))
+  
+  return(p)
+}
