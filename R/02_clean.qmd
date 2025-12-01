@@ -7,6 +7,7 @@ edtiro: visual
 # Libraries & Functions
 
 ```{r}
+#| warning: false
 library("tidyverse")
 library("dplyr")
 library("janitor")
@@ -28,9 +29,7 @@ source("../R/99_proj_func.R")
 
 ```{r}
 #| echo: false
-#I am Maria and I am proposing this way of cleaning table 2. It is a bit different but at the end it is what makes sense for the figure. I am not deleting the other yet just in case. 
-
-dirty_2 <-read_tsv(file = "../data/dirty_data/supp_2.tsv")
+dirty_2 <-read_tsv(file = "../data/dirty_data/supp_2.tsv", show_col_types = FALSE)
 
 #Keeping the columns needed for the analysis
 
@@ -54,32 +53,6 @@ clean_2 <- clean_2 |>
     logLFQ_oligo  = as.numeric(logLFQ_oligo)
   )
 
-write_tsv(clean_2, path = "../data/clean_data/clean_2.tsv")
-
-```
-
-```{r}
-# #| echo: false
-# 
-# dirty_2 <-read_tsv(file = "../data/dirty_data/supp_2.tsv")
-# 
-# #Want to remove all SD columns (from column nr 21-38), but keep all else
-# clean_2 <- dirty_2 |> 
-#   select(1:20, 39:40, 42:43)
-# 
-# #3 remaining column headers; Isolated cells, Brain regions, cerebellum development
-# 
-# #Isolated cells table
-# clean_2_isolated_cells <- clean_2 |> 
-#   select(1:6, 21:24)
-# 
-# #Brain region table
-# clean_2_brain_regions <- clean_2 |> 
-#   select(1:2, 7:17, 21:24)
-#   
-# #Cerebellum dev table
-# clean_2_cerebellum_development <- clean_2 |>
-#   select(1:2, 18:20, 21:24)
 ```
 
 # Cleaning table 3
@@ -130,7 +103,7 @@ print(
 ```{r}
 #| echo: false
 
-dirty_5 <- read_tsv(file = "../data/dirty_data/supp_5.tsv")
+dirty_5 <- read_tsv(file = "../data/dirty_data/supp_5.tsv", show_col_types = FALSE)
 
 #Dropping duplicate gene_names (keeping the first one)
 
@@ -149,7 +122,7 @@ clean_5 <- clean_5 |>
 # Cleaning table 17
 
 ```{r}
-dirty_17 <- read_tsv(file = "../data/dirty_data/supp_17.tsv")
+dirty_17 <- read_tsv(file = "../data/dirty_data/supp_17.tsv", show_col_types = FALSE)
 
 clean_17 <- dirty_17 |> 
   clean_names() 

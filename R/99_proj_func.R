@@ -84,10 +84,10 @@ cluster_cor_mat <- function(cor_mat) {
 
 ## Function to plot rank-rank comparison with specific set of genes
 plot_rank_rank_comparison <- function(
-    marker_list,        # Vector of gene names to highlight
-    cell_type_name,     # String for the plot title (e.g., "Astrocyte")
-    use_density = FALSE,# Boolean: TRUE to use density contours, FALSE for scatter plot
-    plot_limit = 5000   # Maximum rank limit for both axes (removes top artifact)
+    marker_list,         # vector of marker genes
+    cell_type_name,      # string with the cell-type name
+    use_density = FALSE, # boolean: TRUE to apply density contours
+    plot_limit = 5000    # limit for both axes
 ) {
   
   marker_data <- merged_ranked |>
@@ -123,8 +123,8 @@ plot_rank_rank_comparison <- function(
     
     labs(
       title = paste("Rank-Rank Comparison:", cell_type_name, "RNA vs. Protein"),
-      x = "RNA Rank (Low Rank = High Expression)",
-      y = "Protein Rank (Low Rank = High Abundance)"
+      x = "RNA rank (Low rank = High expression)",
+      y = "Protein rank (Low rank = High abundance)"
     ) +
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5))
@@ -136,4 +136,40 @@ plot_rank_rank_comparison <- function(
     height = 6)
   
   return(p)
+}
+
+
+
+draw_panel <- function(df_sub, df_labels, panel_title) {
+  
+  # Initializing the ggplot using the subset of data for the cell type (df_sub)
+  # logFC is plotted on the x-axis and logLFQ on the y-axis
+  ggplot(df_sub, aes(x = logFC, y = logLFQ)) +
+    
+    # Draw all proteins as points, colored by their assigned category (depending on cell type)
+    geom_point(aes(color = category), alpha = 0.95) +
+    
+    # Using color palette defined earlier
+    scale_color_manual(values = cols) +
+    
+    # Adding a vertical dashed line at x = 0
+    geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
+    
+    # Adding gene labels only for marker genes
+    # df_labels contains only the selected markers for this cell type
+    geom_text_repel(
+      data = df_labels,
+      aes(label = gene),
+      size = 3
+    ) +
+    
+    # Adding the panel title and axis labels
+    labs(
+      title = panel_title,
+      x = "log2 fold expression (cell type vs median)",
+      y = "log2 LFQ intensity"
+    ) +
+    
+    # Apply the shared theme used across all panels
+    base_theme
 }

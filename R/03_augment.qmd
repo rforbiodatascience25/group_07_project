@@ -12,10 +12,6 @@ library("tidyverse")
 source("../R/99_proj_func.R")
 ```
 
-```{r}
-dir.create("../data/augmented_data", recursive = TRUE, showWarnings = FALSE)
-```
-
 ## Table 2
 
 ```{r}
@@ -76,7 +72,7 @@ all_df <- all_df |>
 
 # Writing the table to augmented data folder data/data_augmented in tsv format
 
-write_tsv(all_df, "../data/augmented_data/table_2_log.tsv")
+
 
 ```
 
@@ -110,15 +106,10 @@ aug_3 <- clean_3 |>
   # as an output we will have the old columns + mean columns for each cell type
 ```
 
-```{r}
-write_tsv(aug_3, "../data/augmented_data/table_3_log_means.tsv")
-```
-
 ## Table 5
 
 ```{r}
 clean_5 <- read_tsv(file = "../data/clean_data/clean_5.tsv", show_col_types = FALSE)
-clean_5_separate_gene_names <- read_tsv(file = "../data/clean_data/clean_5_separate_gene_names.tsv", show_col_types = FALSE)
 ```
 
 ```{r}
@@ -145,5 +136,11 @@ aug_5 <- clean_5 |>
 ```
 
 ```{r}
+dir.create("../data/augmented_data", recursive = TRUE, showWarnings = FALSE)
+
+write_tsv(all_df, "../data/augmented_data/table_2_log.tsv")
+
+write_tsv(aug_3, "../data/augmented_data/table_3_log_means.tsv")
+
 write_tsv(aug_5, "../data/augmented_data/table_5_log_means.tsv")
 ```
