@@ -4,6 +4,8 @@ format: html
 editor: visual
 ---
 
+## Libraries
+
 ```{r}
 library(tidyverse)
 library(ggplot2)
@@ -12,11 +14,15 @@ library(ggrepel)
 source("../R/99_proj_func.R")
 ```
 
+## Data loading
+
 ```{r}
 #| echo: false
 clean_3 <- read_tsv(file = "../data/augmented_data/table_3_log_means.tsv", show_col_types = FALSE)
 clean_5 <- read_tsv(file = "../data/augmented_data/table_5_log_means.tsv", show_col_types = FALSE)
 ```
+
+## Rank-rank analysis
 
 ```{r}
 prot_clean <- clean_5 |> 
@@ -58,16 +64,16 @@ merged_ranked <- aligned_data |>
   arrange(gene)
 ```
 
+### Cell-type specific marker genes
+
 ```{r}
-library(ggplot2)
-library(ggrepel)
-
-
 astrocyte_markers       <- c("Aqp4", "Gfap", "Slc1a3", "Aldh1l1")
 oligodendrocyte_markers <- c("Cnp1", "Sox10", "Mbp", "Mag", "Mog", "Plp1")
 neuron_markers          <- c("Snap25", "Tubb3", "Calb1", "Syt1")
 microglia_markers       <- c("Aif1", "Tlr2", "Tlr7", "Cd86")
 ```
+
+### Plotting
 
 ```{r}
 astro_plot_density <- plot_rank_rank_comparison(

@@ -32,10 +32,14 @@ clean_5 <- clean_5 |>
   rename_with(~ str_remove(.x, "adult_"))
 ```
 
+### Correlation
+
 ```{r}
 corr_mat_p <- cor(clean_5, use = "pairwise.complete.obs", method = "pearson")
 corr_long_p <- cluster_cor_mat(corr_mat_p)
 ```
+
+### Plotting
 
 ```{r}
 corr_long_p |>
@@ -60,10 +64,14 @@ clean_3 <- clean_3 |>
                 str_remove("cortical_"))
 ```
 
+### Correlation
+
 ```{r}
 corr_mat_t <- cor(clean_3, use = "pairwise.complete.obs", method = "pearson")
 corr_long_t <- cluster_cor_mat(corr_mat_t)
 ```
+
+### Plotting
 
 ```{r}
 corr_long_t |>
