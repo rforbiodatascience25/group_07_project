@@ -55,7 +55,6 @@ p_neuron <- draw_panel(all_df |> filter(type == "Neurons"),          labels_df |
 p_oligo  <- draw_panel(all_df |> filter(type == "Oligodendrocytes"), labels_df |> filter(type == "Oligodendrocytes"), "Oligodendrocytes")
 
 # Combining all four panels into a single figure
-# Arranging them in 2 rows and place the legend at the bottom
 
 combined <- p_astro + p_micro + p_neuron + p_oligo +
   plot_layout(nrow = 2, guides = "collect") &
