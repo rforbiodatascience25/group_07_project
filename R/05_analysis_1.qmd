@@ -1,13 +1,10 @@
 ---
-title: "fig1e_louise"
+title: "Density_plot"
 format: html
 editor: visual
 ---
 
 # Density plot
-
-Heres some info on the figure (from article):\
-*"RNA-Seq analysis of cultured cells and resulting density plots of gene expression levels. The density estimates of gene expression levels are shown for each cell type and for a combination over all cell types as indicated. The combined cell type was derived by extracting the largest expression value over all cell types. In all cell types, gene expression levels followed a binomial distribution (black). Gene expression filtered for RPKM \> 1 values are shown in blue"*
 
 ```{r}
 library(tidyverse)
@@ -132,7 +129,7 @@ count_per_gene_summary <- count_per_gene %>%
   summarise(
     min_n = min(n),
     max_n = max(n),
-    .groups = "drop"
+    .groups = "drop" #drop group after analysis
   )
   
 #Extracting to a printable format
@@ -161,7 +158,7 @@ n_counts <- n_all |>
   left_join(n_subset, by = "cell_group")
 ```
 
-## Step 5: Split data 
+## Step 5: Split data
 
 Done to enable separate plotting
 
@@ -246,6 +243,7 @@ plot_celltypes <- ggplot() +
   )
 
 plot_celltypes
+ggsave("../results/RNA_density_plot_celltype.png", plot_celltypes, dpi = 300)
 ```
 
 ### Combined plot
@@ -281,4 +279,5 @@ plot_combined <- ggplot() +
   )
 
 plot_combined
+ggsave("../results/RNA_density_plot_combined.png", plot_celltypes, dpi = 300)
 ```
